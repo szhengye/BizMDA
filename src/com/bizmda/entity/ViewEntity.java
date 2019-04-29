@@ -45,9 +45,12 @@ public class ViewEntity {
         this.components = new ArrayList<ComponentEntity>();
         for(Map component:componentList) {
             String dataName = (String)component.get("dataName");
+            String type = (String)component.get("type");
             TableEntity tableEntity = mdaConfig.getDataMap().get(dataName);
             Map viewMap = (Map)component.get("view");
             ComponentEntity componentEntity = new ComponentEntity(tableEntity,viewMap);
+            componentEntity.setDataName(dataName);
+            componentEntity.setType(type);
             List<FieldEntity> fieldEntityList = new ArrayList<FieldEntity>();
             List<Map> fieldList = (List<Map>)component.get("fields");
             for(Map field:fieldList) {

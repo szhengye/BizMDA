@@ -1,17 +1,13 @@
 package com.bizmda.entity;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.bizmda.utils.MdaException;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
-import com.bizmda.utils.Constant;
 import com.bizmda.utils.GenUtils;
 
-import lombok.Getter;
 import lombok.ToString;
 
 /**
@@ -27,7 +23,7 @@ public class FieldEntity {
     private String name;
     private String label;
     private String type;
-    private String showType;
+    private String inputType;
     private String dictName;
     private boolean isNull;
     private String className;
@@ -78,7 +74,7 @@ public class FieldEntity {
         else {
             throw new MdaException("域["+this.name+"]类型出错:"+this.type);
         }
-    	this.showType =  (String)map.get("showType");
+    	this.inputType =  (String)map.get("inputType");
     	this.dictName = (String)map.get("dictName");
     	if (map.get("isNull") == null) {
     	    this.isNull = true;

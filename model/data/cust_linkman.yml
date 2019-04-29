@@ -21,7 +21,7 @@ fields:
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: char(32)
    #输入类型：text,textarea,checkbox,radiobox,select
-   showType: text
+   inputType: text
    #相关字典名
    dictName:
    #允许为空
@@ -32,7 +32,7 @@ fields:
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: char(32)
    #输入类型：text,textarea,checkbox,radiobox,select
-   showType: text
+   inputType: text
    #相关字典名
    dictName:
    #允许为空
@@ -40,7 +40,7 @@ fields:
  - name: link_name
    label: 联系人名称
    type: varchar(20)
-   showType: text
+   inputType: text
    isNull: false
  - name: link_sex
    #域标签
@@ -48,7 +48,7 @@ fields:
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: char(1)
    #输入类型：text,textarea,checkbox,radiobox,select
-   showType: select
+   inputType: select
    #相关字典名
    dictName: sex
    #允许为空
@@ -59,7 +59,7 @@ fields:
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: varchar(20)
    #输入类型：text,textarea,checkbox,radiobox,select
-   showType: text
+   inputType: text
    #允许为空
    isNull: true
  - name: link_age
@@ -68,7 +68,7 @@ fields:
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: int
    #输入类型：text,textarea,checkbox,radiobox,select
-   showType: text
+   inputType: text
    #允许为空
    isNull: true
 

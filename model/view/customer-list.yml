@@ -8,12 +8,12 @@ module: crm
 model: VIEW-QUERY-LIST1
 #查询条件域列表
 components:
-  #相关数据表
-  - dataName: customer
+  #视图类型：QUERY、MASTER、DETAIL
+  - type: QUERY
+    #相关数据表
+    dataName: customer
     #视图扩展属性
     view:
-      #视图类型：QUERY、MASTER、DETAIL
-      type: QUERY
     fields:
       #域名
     - name: cust_no
@@ -35,12 +35,12 @@ components:
         #跨度
         span: 6
     actions:
-  #相关数据表
-  - dataName: customer
+    #视图类型：QUERY、MASTER、DETAIL
+  - type: LIST
+    #相关数据表
+    dataName: customer
     #视图扩展属性
     view:
-      #视图类型：QUERY、MASTER、DETAIL
-      type: LIST
     fields:
       #域名
       - name: cust_no
@@ -56,12 +56,12 @@ components:
       - name: cust_address
       - name: cust_registered_capital
     actions:
-  #相关数据表
-  - dataName: customer
+    #视图类型：QUERY、MASTER、DETAIL
+  - type: MODAL
+    #相关数据表
+    dataName: customer
     #视图扩展属性
     view:
-      #视图类型：QUERY、MASTER、DETAIL
-      type: MODAL
     fields:
       #域名
       - name: cust_no

@@ -18,8 +18,9 @@ import java.util.Map;
 @Data
 @ToString
 public class ComponentEntity {
+	private String type;
 	//表的名称
-	private String name;
+	private String dataName;
 	//表的备注
 	private String label;
 	private String module;
