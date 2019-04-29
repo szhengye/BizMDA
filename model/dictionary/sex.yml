@@ -1,0 +1,12 @@
+#字典名
+name: sex
+#字典标签
+text: 性别
+#条目列表
+items:
+   #条目标签
+ - text: 男
+   #条目值
+   value: M
+ - text: 女
+   value: F

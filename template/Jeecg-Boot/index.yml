@@ -1,0 +1,29 @@
+name: 人人开源
+templates:
+ - file: Entity.java.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/entity/${className}.java
+ - file: Mapper.java.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/mapper/${className}Mapper.java
+ - file: Mapper.xml.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/mapper/xml/${className}Mapper.xml
+ - file: Service.java.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/service/I${className}Service.java
+ - file: ServiceImpl.java.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/service/impl/${className}ServiceImpl.java
+ - file: Controller.java.vm
+   model: data
+   target: ${mda.sourcePath}/${mda.packagePath}/${module}/controller/${className}Controller.java
+ - file: create-table.sql.vm
+   model: data
+   target: ${mda.resourcePath}/db/${module}/${name}.sql
+ - file: QueryList1.vue.vm
+   model: VIEW-QUERY-LIST1
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+ - file: QueryList1Modal.vue.vm
+   model: VIEW-QUERY-LIST1
+   target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue

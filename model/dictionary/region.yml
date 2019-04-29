@@ -1,0 +1,12 @@
+#字典名
+name: region
+#字典标签
+text: 地区
+#条目列表
+items:
+   #条目标签
+ - text: 北京
+   #条目值
+   value: “010“
+ - text: 上海
+   value: "021"

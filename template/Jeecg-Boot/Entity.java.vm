@@ -1,0 +1,43 @@
+package ${mda.packageName}.${module}.entity;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.jeecgframework.poi.excel.annotation.Excel;
+
+/**
+ * @Description: ${label}
+ * @author： ${mda.author}
+ * @date：   ${mda.datetime}
+ * @version： ${mda.version}
+ */
+@Data
+@TableName("${name}")
+public class ${className} implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+#foreach ($field in $fields)
+	/**$field.label*/
+#if($field.name == $primaryKeyField.name)
+#if(${primaryKeyType} == "UUID")
+	@TableId(type = IdType.UUID)
+#elseif(${primaryKeyType} == "AUTO_INCREMENT")
+	@TableId(type = IdType.AUTO)
+#else
+	@TableId(type = IdType.INPUT)
+#end
+#end
+	@Excel(name = "${field.label}", width = ${field.len})
+#if($field.type == "timestamp")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+#end
+	private $field.javaType ${field.classname};
+#end
+}

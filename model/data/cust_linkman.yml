@@ -1,0 +1,74 @@
+#表名
+name: cust_linkman
+#标签
+label: 联系人
+#所属模块
+module: crm
+#主键
+primaryKey: link_no
+#主键生成规则（MANUAL-手工输入(缺省) UUID-UUID AUTO_INCREMENT-自增）
+primaryKeyType: UUID
+#是否物理删除,会自动生成mda_status域（0正常 1删除 2停用）
+hasStatus: false
+#是否跟踪创建和更新，会自动生成create_by,create_date,update_by,update_date
+hasCreateUpdate: false
+#域列表
+fields:
+   #域名
+ - name: link_no
+   #域标签
+   label: 联系人编号
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: char(32)
+   #输入类型：text,textarea,checkbox,radiobox,select
+   showType: text
+   #相关字典名
+   dictName:
+   #允许为空
+   isNull: false
+ - name: link_cust_no
+   #域标签
+   label: 联系人编号
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: char(32)
+   #输入类型：text,textarea,checkbox,radiobox,select
+   showType: text
+   #相关字典名
+   dictName:
+   #允许为空
+   isNull: false
+ - name: link_name
+   label: 联系人名称
+   type: varchar(20)
+   showType: text
+   isNull: false
+ - name: link_sex
+   #域标签
+   label: 性别
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: char(1)
+   #输入类型：text,textarea,checkbox,radiobox,select
+   showType: select
+   #相关字典名
+   dictName: sex
+   #允许为空
+   isNull: false
+ - name: link_position
+   #域标签
+   label: 职位
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: varchar(20)
+   #输入类型：text,textarea,checkbox,radiobox,select
+   showType: text
+   #允许为空
+   isNull: true
+ - name: link_age
+   #域标签
+   label: 年龄
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: int
+   #输入类型：text,textarea,checkbox,radiobox,select
+   showType: text
+   #允许为空
+   isNull: true
+

@@ -1,0 +1,16 @@
+package ${mda.packageName}.${module}.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${mda.packageName}.${module}.entity.${className};
+
+/**
+ * ${label}
+ *
+ * @author ${mda.author}
+ * @email ${mda.email}
+ * @date ${mda.datetime}
+ * @version ${mda.version}
+ */
+public interface I${className}Service extends IService<${className}> {
+
+}
