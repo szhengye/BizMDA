@@ -2,14 +2,14 @@
     <a-card :bordered="false">
 #set($has_query = false)
 #foreach ($component in $components)
-    #if(${component.view.type} == "QUERY")
+    #if(${component.type} == "QUERY")
         #set($has_query = true)
         #set($query_component = $component)
         #break
     #end
 #end
         #foreach ($component in $components)
-            #if(${component.view.type} == "LIST")
+            #if(${component.type} == "LIST")
                 #set($list_component = $component)
                 #break
             #end
