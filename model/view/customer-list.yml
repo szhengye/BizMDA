@@ -8,7 +8,7 @@ module: crm
 model: VIEW-QUERY-LIST1
 #查询条件域列表
 components:
-  #视图类型：QUERY、MASTER、DETAIL
+  #视图类型：查询条件组件
   - type: QUERY
     #相关数据表
     dataName: customer
@@ -35,7 +35,7 @@ components:
         #跨度
         span: 6
     actions:
-    #视图类型：QUERY、MASTER、DETAIL
+    #视图类型：数据列表组件
   - type: LIST
     #相关数据表
     dataName: customer
@@ -56,7 +56,7 @@ components:
       - name: cust_address
       - name: cust_registered_capital
     actions:
-    #视图类型：QUERY、MASTER、DETAIL
+    #视图类型：弹出编辑modal窗口组件
   - type: MODAL
     #相关数据表
     dataName: customer
