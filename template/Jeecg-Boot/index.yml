@@ -1,29 +1,38 @@
-name: 人人开源
+name: Jeecg-Boot快速开发框架
 templates:
+   #数据Entity实体类
  - file: Entity.java.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/entity/${className}.java
+   #数据映射类
  - file: Mapper.java.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/mapper/${className}Mapper.java
+   #数据映射配置文件
  - file: Mapper.xml.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/mapper/xml/${className}Mapper.xml
+   #数据服务接口
  - file: Service.java.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/service/I${className}Service.java
+   #数据服务实现类
  - file: ServiceImpl.java.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/service/impl/${className}ServiceImpl.java
+   #数据控制类
  - file: Controller.java.vm
    model: data
    target: ${mda.sourcePath}/${mda.packagePath}/${module}/controller/${className}Controller.java
+   #数据相关建表SQL文件
  - file: create-table.sql.vm
    model: data
    target: ${mda.resourcePath}/db/${module}/${name}.sql
+   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口）
  - file: QueryList1.vue.vm
    model: VIEW-QUERY-LIST1
    target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据列表的弹出modal窗口数据编辑VUE页面文件
  - file: QueryList1Modal.vue.vm
    model: VIEW-QUERY-LIST1
    target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
