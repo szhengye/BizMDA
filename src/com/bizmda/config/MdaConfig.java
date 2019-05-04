@@ -7,10 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.bizmda.entity.DictionaryEntity;
-import com.bizmda.entity.MdaEntity;
-import com.bizmda.entity.TableEntity;
-import com.bizmda.entity.ViewEntity;
+import com.bizmda.entity.*;
 import org.yaml.snakeyaml.Yaml;
 
 import com.bizmda.utils.GenUtils;
@@ -55,9 +52,10 @@ public class MdaConfig {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            log.info(map.toString());
+            log.info("dict:"+map.toString());
             DictionaryEntity dictionaryEntity = new DictionaryEntity(map);
-//            this.dictionaryMap.put(dictionaryEntity., value)
+            log.info("dictionaryEntity:"+dictionaryEntity.toString());
+            this.dictionaryMap.put(dictionaryEntity.getName(), dictionaryEntity);
 		}
 
 		this.dataMap = new HashMap<String, TableEntity>();
@@ -75,6 +73,27 @@ public class MdaConfig {
             this.dataMap.put(tableEntity.getName(), tableEntity);
 		}
 
+		//处理primaryKeyTable
+		for(String tableName:this.dataMap.keySet()) {
+			TableEntity tableEntity = this.dataMap.get(tableName);
+			for(FieldEntity fieldEntity:tableEntity.getFields()) {
+				String primaryKeyTableName = fieldEntity.getPrimaryKeyTableName();
+				if (primaryKeyTableName == null)
+					continue;
+				TableEntity primaryKeyTableEntity = this.dataMap.get(primaryKeyTableName);
+				if (primaryKeyTableEntity == null) {
+					throw new MdaException("错误：域["+primaryKeyTableName+"."
+							+fieldEntity.getName()
+							+"]的外键表"+primaryKeyTableName+"不存在！");
+				}
+				fieldEntity.setPrimaryKeyTable(primaryKeyTableEntity);
+				ForeignKeyTableEntity foreignKeyTableEntity = new ForeignKeyTableEntity(tableEntity,fieldEntity);
+				primaryKeyTableEntity.addForeignKeyTableEntity(foreignKeyTableEntity);
+//				this.dataMap.put(primaryKeyTableName,primaryKeyTableEntity);
+				log.info("处理primaryKeyTable:"+this.dataMap);
+			}
+		}
+
 		this.viewMap = new HashMap<String, ViewEntity>();
 		List<File> viewFileList = GenUtils.getFileList(configPath+"/view");
 		for(File viewFile:viewFileList) {
@@ -86,6 +105,7 @@ public class MdaConfig {
 			}
 			log.info(map.toString());
 			ViewEntity viewEntity = new ViewEntity(map);
+			viewEntity.setView((Map)map.get("view"));
 			log.info("view:"+viewEntity.toString());
 			this.viewMap.put(viewEntity.getName(), viewEntity);
 		}

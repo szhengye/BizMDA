@@ -35,6 +35,8 @@ public class TableEntity {
 	private String className;
 	//类名(第一个字母小写)，如：sys_user => sysUser
 //	private String classname;
+	//外键表
+	private List<ForeignKeyTableEntity> foreignKeyTableList;
 	
 	public TableEntity(Map map) throws MdaException {
 		this.name = (String)map.get("name");
@@ -56,6 +58,7 @@ public class TableEntity {
 			if (fieldEntity.getName().equals(this.primaryKey)) 
 				this.primaryKeyField = fieldEntity;
 		}
+		this.foreignKeyTableList = new ArrayList<ForeignKeyTableEntity>();
 	}
 
 	public FieldEntity getFieldByName(String fieldName) throws MdaException {
@@ -75,6 +78,10 @@ public class TableEntity {
 		return StringUtils.uncapitalize(this.className);
 	}
 
+	public void addForeignKeyTableEntity(ForeignKeyTableEntity foreignKeyTableEntity) {
+		this.foreignKeyTableList.add(foreignKeyTableEntity);
+	}
+
 	public Map toMap() {
 		Map map = new HashMap();
 		map.put("name", this.name);
@@ -86,6 +93,7 @@ public class TableEntity {
 		map.put("hasCreateUpdate", this.isHasCreateUpdate());
 		map.put("fields", this.fields);
 		map.put("primaryKeyField", this.primaryKeyField);
+		map.put("foreignKeyTableList",this.foreignKeyTableList);
 		map.put("className", this.className);
 		map.put("classname", this.getClassname());
 		return map;

@@ -3,13 +3,17 @@ package ${mda.packageName}.${module}.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
+import org.jeecgframework.poi.excel.annotation.ExcelCollection;
 
 /**
  * @Description: ${label}
@@ -39,5 +43,12 @@ public class ${className} implements Serializable {
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 #end
 	private $field.javaType ${field.classname};
+#end
+
+#foreach($foreignKeyTable in $foreignKeyTableList)
+	/**子表列表: ${foreignKeyTable.table.label}(外键:${foreignKeyTable.field.label}-${foreignKeyTable.field.name})**/
+	@ExcelCollection(name="${foreignKeyTable.table.label}")
+	@TableField(exist = false)
+	private List<${foreignKeyTable.table.className}> ${foreignKeyTable.table.classname}List;
 #end
 }

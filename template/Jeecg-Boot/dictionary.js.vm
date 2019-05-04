@@ -1,0 +1,15 @@
+var dicts = {
+#foreach($dict in $dicts.entrySet())
+	"$dict.key": [
+#foreach($option in $dict.value.dictItems)
+		{
+			"value": "${option.value}",
+			"text": "${option.text}"
+		},
+#end
+	],
+#end
+};
+export {
+	dicts
+};

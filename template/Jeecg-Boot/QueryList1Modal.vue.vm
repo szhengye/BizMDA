@@ -8,7 +8,8 @@
 <template>
     <a-modal
             :title="title"
-            :width="800"
+            :width="#if(${modal_component.view.width})${modal_component.view.width}#else
+800#end"
             :visible="visible"
             :confirmLoading="confirmLoading"
             @ok="handleOk"
@@ -17,15 +18,46 @@
 
         <a-spin :spinning="confirmLoading">
             <a-form :form="form">
+                <a-row :gutter="16">
 #foreach($field in $modal_component.fields)
-                <a-form-item
-                        :labelCol="labelCol"
-                        :wrapperCol="wrapperCol"
+#if(${field.view.span} <= 6)
+  #set($labelCol = 12)
+  #set($wrapperCol = ${field.view.span} * 4 - 12)
+                  <a-col :span="6">#elseif(${field.view.span} <=12)
+  #set($labelCol = 6)
+  #set($wrapperCol = ${field.view.span} * 2 - 6)
+                  <a-col :span="12">#elseif(${field.view.span} <=18)
+  #set($labelCol = 4)
+  #set($tmp1 = ${field.view.span} * 1.33 - 4)
+  #set($wrapperCol = $number.format("#0",$tmp1))
+                  <a-col :span="18">#elseif(${field.view.span} <=24)
+  #set($labelCol = 3)
+  #set($wrapperCol = ${field.view.span} - 3)
+                  <a-col :span="24">#else
+  #set($labelCol = 3)
+  #set($wrapperCol = 21)
+<a-col :span="24">#end
+
+                    <a-form-item
+                        :labelCol="{span: $labelCol}"
+                        :wrapperCol="{span: $wrapperCol}"
                         label="${field.label}"
                         hasFeedback >
-                    <a-input #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end v-decorator="['${field.classname}', {}]" />
-                </a-form-item>
+#if(${field.inputType} == "select")
+                        <a-select v-decorator="['${field.classname}', {}]" #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end>
+                            <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
+                        </a-select>
+#else
+                        <a-input #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end v-decorator="['${field.classname}', {}]" />
 #end
+                    </a-form-item>
+                  </a-col>
+  #if(${field.view.newLine})
+                </a-row>
+                <a-row :gutter="16">
+  #end
+#end
+                </a-row>
             </a-form>
         </a-spin>
     </a-modal>
@@ -33,36 +65,31 @@
 
 <script>
     import { httpAction } from '@/api/manage'
-    import pick from 'lodash.pick'
-    import moment from "moment"
+    import {dicts} from '@/config/MdaDictionary.js'
+    // import pick from 'lodash.pick'
+    // import moment from "moment"
 
     export default {
-        name: "${className}Modal}",
+        name: "${className}Modal",
         data () {
             return {
                 title:"操作",
                 visible: false,
+                selectOptions: {},
                 model: {},
-                labelCol: {
-                    xs: { span: 24 },
-                    sm: { span: 5 },
-                },
-                wrapperCol: {
-                    xs: { span: 24 },
-                    sm: { span: 16 },
-                },
 
                 confirmLoading: false,
                 form: this.$form.createForm(this),
                 validatorRules:{
                 },
                 url: {
-                    add: "/${module}/${list_component.classname}/add",
-                    edit: "/${module}/${list_component.classname}/edit",
+                    add: "/${modal_component.module}/${modal_component.classname}/add",
+                    edit: "/${modal_component.module}/${modal_component.classname}/edit",
                 },
             }
         },
         created () {
+            this.selectOptions = dicts;
         },
         methods: {
             add () {

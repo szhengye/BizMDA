@@ -41,7 +41,7 @@ import com.alibaba.fastjson.JSON;
  * @version ${mda.version}
  */
 @RestController
-@RequestMapping("/${module}/${name}")
+@RequestMapping("/${module}/${classname}")
 @Slf4j
 public class ${className}Controller {
     @Autowired
@@ -96,7 +96,7 @@ public class ${className}Controller {
     @PutMapping(value = "/edit")
     public Result<${className}> edit(@RequestBody ${className} ${classname}) {
         Result<${className}> result = new Result<${className}>();
-    ${className} ${classname}Entity = ${classname}Service.getById(${classname}.get${primaryKeyField.className}());
+        ${className} ${classname}Entity = ${classname}Service.getById(${classname}.get${primaryKeyField.className}());
         if(${classname}Entity==null) {
             result.error500("未找到对应实体");
         }else {
@@ -109,6 +109,48 @@ public class ${className}Controller {
 
         return result;
     }
+
+#if($foreignKeyTableList.size() > 0)
+    /**
+     * 添加
+     *
+     * @param ${classname}
+     * @return
+     */
+    @PostMapping(value = "/addMain")
+    public Result<${className}> addMain(@RequestBody ${className} ${classname}) {
+        Result<${className}> result = new Result<${className}>();
+        try {
+            ${classname}Service.saveMain(${classname});
+            result.success("添加成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info(e.getMessage());
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 编辑
+     *
+     * @param ${classname}
+     * @return
+     */
+    @PutMapping(value = "/editMain")
+    public Result<${className}> eidtMain(@RequestBody ${className} ${classname}) {
+        Result<${className}> result = new Result<${className}>();
+        ${className} ${classname}Entity = ${classname}Service.getById(${classname}.get${primaryKeyField.className}());
+        if (${classname}Entity == null) {
+            result.error500("未找到对应实体");
+        } else {
+            ${classname}Service.updateMain(${classname});
+            result.success("修改成功!");
+        }
+
+        return result;
+    }
+#end
 
     /**
       *   通过id删除
@@ -165,6 +207,25 @@ public class ${className}Controller {
         }
         return result;
     }
+
+#foreach ($field in $fields)
+#if($field.primaryKeyTableName)
+    /**
+     * 通过id查询
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping(value = "/query${className}ListBy${field.className}")
+    public Result<List<${className}>> query${className}ListBy${field.className}(@RequestParam(name = "id", required = true) String id) {
+        Result<List<${className}>> result = new Result<List<${className}>>();
+        List<${className}> ${classname}List = ${classname}Service.select${className}sBy${field.className}(id);
+        result.setResult(${classname}List);
+        result.setSuccess(true);
+        return result;
+    }
+    #end
+    #end
 
     /**
         * 导出excel

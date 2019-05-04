@@ -1,0 +1,299 @@
+#foreach ($component in $components)
+  #if(${component.type} == "MODAL-MASTER")
+    #set($modal_component = $component)
+    #break
+  #end
+#end
+
+<template>
+    <a-modal
+            :title="title"
+            :width="#if(${modal_component.view.width})${modal_component.view.width}#else
+800#end"
+            :visible="visible"
+            :confirmLoading="confirmLoading"
+            @ok="handleOk"
+            @cancel="handleCancel"
+            cancelText="关闭">
+
+        <a-spin :spinning="confirmLoading">
+            <a-form :form="form">
+                <a-row :gutter="16">
+#foreach($field in $modal_component.fields)
+#if(${field.view.span} <= 6)
+  #set($labelCol = 12)
+  #set($wrapperCol = ${field.view.span} * 4 - 12)
+                  <a-col :span="6">#elseif(${field.view.span} <=12)
+  #set($labelCol = 6)
+  #set($wrapperCol = ${field.view.span} * 2 - 6)
+                  <a-col :span="12">#elseif(${field.view.span} <=18)
+  #set($labelCol = 4)
+  #set($tmp1 = ${field.view.span} * 1.33 - 4)
+  #set($wrapperCol = $number.format("#0",$tmp1))
+                  <a-col :span="18">#elseif(${field.view.span} <=24)
+  #set($labelCol = 3)
+  #set($wrapperCol = ${field.view.span} - 3)
+                  <a-col :span="24">#else
+  #set($labelCol = 3)
+  #set($wrapperCol = 21)
+<a-col :span="24">#end
+
+                    <a-form-item
+                        :labelCol="{span: $labelCol}"
+                        :wrapperCol="{span: $wrapperCol}"
+                        label="${field.label}"
+                        hasFeedback >
+#if(${field.inputType} == "select")
+                        <a-select v-decorator="['${field.classname}', {}]" #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end>
+                            <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
+                        </a-select>
+#else
+                        <a-input #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end v-decorator="['${field.classname}', {}]" />
+#end
+                    </a-form-item>
+                  </a-col>
+  #if(${field.view.newLine})
+                </a-row>
+                <a-row :gutter="16">
+  #end
+#end
+                </a-row>
+
+                    <!-- 子表单区域 -->
+                    <a-tabs defaultActiveKey="1" >
+#set($_mda_count = 0)
+#foreach ($component in $components)
+#if(${component.type} == "MODAL-DETAIL")
+  #set($_mda_count = $_mda_count + 1)
+                        <a-tab-pane tab="${component.label}" key="$_mda_count">
+                            <div>
+                                <a-row type="flex" style="margin-bottom:10px" :gutter="16">
+  #foreach($field in $component.fields)
+                                    <a-col :span="#if(${field.view.span})${field.view.span}#else
+5#end">${field.label}</a-col>
+    #end
+                                </a-row>
+
+                                <a-row type="flex" style="margin-bottom:10px" :gutter="16" v-for="(item, index) in ${modal_component.classname}Model.${component.classname}List" :key="index">
+  #foreach($field in $component.fields)
+                                    <a-col :span="#if(${field.view.span})${field.view.span}#else
+5#end">
+                                        <a-form-item>
+                                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+
+                                                     v-decorator="['${component.classname}List['+index+'].${field.classname}', {'initialValue':item.${field.classname},rules: [{ required:#if(${field.null}) false#else true#end, message: '请输入${field.label}!' }]}]" />
+                                        </a-form-item>
+                                    </a-col>
+  #end
+
+                                    <a-col :span="6">
+                                        <a-form-item>
+                                            <a-button @click="addRow${component.className}" icon="plus"></a-button>&nbsp;
+                                            <a-button @click="delRow${component.className}(index)" icon="minus"></a-button>
+                                        </a-form-item>
+                                    </a-col>
+
+                                </a-row>
+                            </div>
+                        </a-tab-pane>
+#end
+#end
+
+                    </a-tabs>
+
+            </a-form>
+        </a-spin>
+    </a-modal>
+</template>
+
+
+<script>
+    import { httpAction,getAction } from '@/api/manage'
+    import JDate from '@/components/jeecg/JDate'
+    import pick from 'lodash.pick'
+    import moment from "moment"
+    import {dicts} from '@/config/MdaDictionary.js'
+
+    export default {
+        name: "${className}Modal",
+        components: {
+            JDate
+        },
+        data () {
+            return {
+                title:"操作",
+                visible: false,
+                selectOptions: {},
+                ${modal_component.classname}Model: {
+#foreach ($component in $components)
+#if(${component.type} == "MODAL-DETAIL")
+                    ${component.classname}List: [{}],
+#end
+#end
+
+                  },
+                confirmLoading: false,
+                form: this.$form.createForm(this),
+                validatorRules:{
+                },
+                url: {
+                    add: "/${modal_component.module}/${modal_component.classname}/addMain",
+                    edit: "/${modal_component.module}/${modal_component.classname}/editMain",
+#foreach ($component in $components)
+#if(${component.type} == "MODAL-DETAIL")
+  #foreach($field in $component.table.fields)
+    #if(${field.primaryKeyTableName})
+
+                    ${component.classname}List: "/${component.module}/${component.classname}/query${component.className}ListBy${field.className}",
+    #end
+  #end
+#end
+#end
+
+                },
+            }
+        },
+        created () {
+            this.selectOptions = dicts;
+        },
+        methods: {
+            add () {
+                this.edit({});
+            },
+            edit (record) {
+                this.form.resetFields();
+                this.${modal_component.classname}Model = Object.assign({}, record);
+#foreach ($component in $components)
+  #if(${component.type} == "MODAL-DETAIL")
+                this.${modal_component.classname}Model.${component.classname}List = [{}];
+  #end
+#end
+
+                //--------------------------------------------------------
+                //初始化明细表数据
+                console.log(this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname})
+                if(this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}){
+                    let params = {id:this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}}
+#foreach ($component in $components)
+#if(${component.type} == "MODAL-DETAIL")
+                    //初始化${component.label}列表
+                    getAction(this.url.${component.classname}List,params).then((res)=>{
+                        if (res.success) {
+                            this.${modal_component.classname}Model.${component.classname}List = res.result;
+                            this.$forceUpdate()
+                       }
+                   })
+#end
+#end
+
+                }
+                //--------------------------------------------------------
+                this.visible = true;
+                this.$nextTick(() => {
+            #foreach($field in $modal_component.fields)
+              #if(${field.type} == "datetime")
+
+                  this.form.setFieldsValue({${field.classname}:
+                  this.${modal_component.classname}Model.${field.classname}? moment(this.${modal_component.classname}Model.${field.classname}, 'YYYY-MM-DD HH:mm:ss') : null
+              })
+              #elseif(${field.type} == "date")
+
+                  this.form.setFieldsValue({${field.classname}:
+                  this.${modal_component.classname}Model.${field.classname}? moment(this.${modal_component.classname}Model.${field.classname}) : null
+              })
+              #else
+
+                  this.form.setFieldsValue({${field.classname}:
+                  this.${modal_component.classname}Model.${field.classname}})
+              #end
+            #end
+
+                });
+                console.log(this.${modal_component.classname}Model)
+            },
+            close () {
+                this.$emit('close');
+                this.visible = false;
+            },
+            handleOk () {
+                const that = this;
+                // 触发表单验证
+                this.form.validateFields((err, values) => {
+                    if (!err) {
+                        that.confirmLoading = true;
+                        let httpurl = '';
+                        let method = '';
+                        if(!this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}){
+                            httpurl+=this.url.add;
+                            method = 'post';
+                        }else{
+                            httpurl+=this.url.edit;
+                            method = 'put';
+                        }
+                        let ${modal_component.classname}Data = Object.assign(this.${modal_component.classname}Model, values);
+
+#foreach($field in $modal_component.fields)
+  #if(${field.type} == "datetime")
+
+                            ${modal_component.classname}Data.${field.classname} = ${modal_component.classname}Data.${field.classname}?${modal_component.classname}Data.${field.classname}.format('YYYY-MM-DD HH:mm:ss'):null;
+  #elseif(${field.type} == "date")
+
+                            ${modal_component.classname}Data.${field.classname} = ${modal_component.classname}Data.${field.classname}?${modal_component.classname}Data.${field.classname}.format():null;
+  #else
+  #end
+#end
+
+                        console.log(${modal_component.classname}Data)
+                        httpAction(httpurl,${modal_component.classname}Data,method).then((res)=>{
+                            if(res.success){
+                                that.${usd}message.success(res.message);
+                                that.$emit('ok');
+                            }else{
+                                that.${usd}message.warning(res.message);
+                            }
+                        }).finally(() => {
+                            that.confirmLoading = false;
+                            that.close();
+                        })
+
+                    }
+                })
+            },
+            handleCancel () {
+                this.close()
+            },
+#foreach ($component in $components)
+#if(${component.type} == "MODAL-DETAIL")
+            addRow${component.className} () {
+                this.${modal_component.classname}Model.${component.classname}List.push({});
+                this.$forceUpdate();
+            },
+            delRow${component.className} (index) {
+                console.log(index)
+                this.${modal_component.classname}Model.${component.classname}List.splice(index,1);
+                this.$forceUpdate();
+            },
+  #end
+  #end
+
+        }
+    }
+</script>
+
+<style scoped>
+    .ant-btn {
+        padding: 0 10px;
+        margin-left: 3px;
+    }
+    .ant-form-item-control {
+        line-height: 0px;
+    }
+    /** 主表单行间距 */
+    .ant-form .ant-form-item {
+        margin-bottom: 10px;
+    }
+    /** Tab页面行间距 */
+    .ant-tabs-content .ant-form-item {
+        margin-bottom: 0px;
+    }
+</style>

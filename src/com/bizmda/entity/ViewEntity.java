@@ -1,10 +1,9 @@
 package com.bizmda.entity;
 
 import com.bizmda.config.MdaConfig;
-import com.bizmda.utils.Constant;
 import com.bizmda.utils.GenUtils;
 import com.bizmda.utils.MdaException;
-import lombok.Getter;
+import lombok.Data;
 import lombok.ToString;
 import lombok.extern.java.Log;
 import org.apache.commons.beanutils.BeanUtils;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
+@Data
 @ToString
 @Log
 public class ViewEntity {
@@ -30,6 +29,8 @@ public class ViewEntity {
     //表的备注
     private String label;
     private String module;
+    private Map view;
+
     private List<ComponentEntity> components;
 
     public ViewEntity(Map map) throws MdaException {
@@ -44,12 +45,15 @@ public class ViewEntity {
 
         this.components = new ArrayList<ComponentEntity>();
         for(Map component:componentList) {
-            String dataName = (String)component.get("dataName");
+            String tableName = (String)component.get("tableName");
             String type = (String)component.get("type");
-            TableEntity tableEntity = mdaConfig.getDataMap().get(dataName);
+            TableEntity tableEntity = mdaConfig.getDataMap().get(tableName);
+            if (tableEntity == null) {
+                throw new MdaException("视图"+this.name+"中组件的数据表"+tableName+"没有定义！");
+            }
             Map viewMap = (Map)component.get("view");
             ComponentEntity componentEntity = new ComponentEntity(tableEntity,viewMap);
-            componentEntity.setDataName(dataName);
+            componentEntity.setTableName(tableName);
             componentEntity.setType(type);
             List<FieldEntity> fieldEntityList = new ArrayList<FieldEntity>();
             List<Map> fieldList = (List<Map>)component.get("fields");

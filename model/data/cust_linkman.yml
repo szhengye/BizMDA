@@ -37,6 +37,7 @@ fields:
    dictName:
    #允许为空
    isNull: false
+   primaryKeyTableName: customer
  - name: link_name
    label: 联系人名称
    type: varchar(20)

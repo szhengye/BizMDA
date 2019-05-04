@@ -30,6 +30,8 @@ public class FieldEntity {
 //    private String classname;
     private String javaType;
     private int len;
+    private String primaryKeyTableName;
+    private TableEntity primaryKeyTable;
     private Map view;
 
     public  FieldEntity() {
@@ -42,6 +44,7 @@ public class FieldEntity {
 //		this.classname = StringUtils.uncapitalize(this.className);
     	this.label = (String)map.get("label");
     	this.type = (String)map.get("type");
+    	this.primaryKeyTableName = (String)map.get("primaryKeyTableName");
 //        int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
         if (this.type.equalsIgnoreCase("int")) {
             this.javaType = "int";

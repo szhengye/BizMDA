@@ -106,9 +106,10 @@
 </template>
 <script>
     import ${className}Modal from './modules/${className}Modal'
-    import {initDictOptions} from '@/components/dict/JDictSelectUtil'
     //import mdaDictionary from '@/components/dict/MdaDictionary'
     import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+    import {filterDictText} from '@/components/dict/JDictSelectUtil'
+    import {dicts} from '@/config/MdaDictionary.js'
 
     export default {
         name: "${className}",
@@ -120,7 +121,7 @@
             return {
                 description: '${label}',
                 //字典数组缓存
-                sexDictOptions: [],
+                selectOptions: {},
                 importExcelUrl:`${usd}{window._CONFIG['domianURL']}/${module}/${list_component.classname}/importExcel`,
                 // 表头
                 columns: [
@@ -139,7 +140,13 @@
                     {
                         title: '${field.label}',
                         align: "center",
-                        dataIndex: '${field.classname}'
+                        dataIndex: '${field.classname}'#if(${field.inputType} == "select"),
+                        customRender: (text) => {
+                            //字典值替换通用方法
+                            return filterDictText(this.selectOptions['${field.dictName}'], text);
+                        }
+#end
+
                     },
                     #end
                     {
@@ -155,6 +162,9 @@
                     deleteBatch: "/${module}/${list_component.classname}/deleteBatch",
                 },
             }
+        },
+        created () {
+            this.selectOptions = dicts;
         },
         methods: {
             exportXls(){
@@ -173,15 +183,6 @@
                 } else if (info.file.status === 'error') {
                     this.$message.error("${info.file.name} 文件上传失败.");
                 }
-            },
-            initDictConfig() {
-                console.log("--我才是真的方法!--")
-                //初始化字典 - 性别
-                initDictOptions('sex').then((res) => {
-                    if (res.success) {
-                        this.sexDictOptions = res.result;
-                    }
-                });
             }
         }
     }

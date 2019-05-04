@@ -2,6 +2,9 @@ package ${mda.packageName}.${module}.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import ${mda.packageName}.${module}.entity.${className};
+import java.util.List;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * ${label}
@@ -12,5 +15,38 @@ import ${mda.packageName}.${module}.entity.${className};
  * @version ${mda.version}
  */
 public interface I${className}Service extends IService<${className}> {
+#foreach ($field in $fields)
+#if($field.primaryKeyTableName)
+
+    public List<${className}> select${className}sBy${field.className}(String ${field.classname});
+#end
+#end
+
+#if($foreignKeyTableList.size() > 0)
+
+    /**
+     * 添加一对多
+     *
+     */
+    public void saveMain(${className} ${classname}) ;
+
+    /**
+     * 修改一对多
+     *
+     */
+    public void updateMain(${className} ${classname}) ;
+
+    /**
+     * 删除一对多
+     * @param id
+     */
+    public void delMain (String id);
+
+    /**
+     * 批量删除一对多
+     * @param idList
+     */
+    public void delBatchMain (Collection<? extends Serializable> idList);
+#end
 
 }

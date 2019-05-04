@@ -6,6 +6,7 @@ import com.bizmda.utils.MdaException;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
+import lombok.extern.java.Log;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -17,10 +18,12 @@ import java.util.Map;
 
 @Data
 @ToString
+@Log
 public class ComponentEntity {
 	private String type;
 	//表的名称
-	private String dataName;
+	private String tableName;
+	private TableEntity table;
 	//表的备注
 	private String label;
 	private String module;
@@ -44,6 +47,7 @@ public class ComponentEntity {
 
 	public ComponentEntity(TableEntity table,Map viewMap) throws MdaException {
 		try {
+			log.info("table:"+table);
 			BeanUtils.copyProperties(this,table);
 		} catch (IllegalAccessException e) {
 			throw new MdaException("视图属性拷贝出错!",e);
@@ -52,6 +56,7 @@ public class ComponentEntity {
 		}
 		this.view = viewMap;
 		this.fields = new ArrayList<FieldEntity>();
+		this.table = table;
 	}
 
 	public String getClassName() {

@@ -3,6 +3,10 @@ package ${mda.packageName}.${module}.mapper;
 import ${mda.packageName}.${module}.entity.${className};
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import java.util.List;
 
 /**
  * ${label}
@@ -13,5 +17,20 @@ import org.apache.ibatis.annotations.Mapper;
  * @version ${mda.version}
  */
 public interface ${className}Mapper extends BaseMapper<${className}> {
-	
+  #foreach ($field in $fields)
+    #if($field.primaryKeyTableName)
+
+        /**
+         *  通过主表外键批量删除客户
+         * @param ${field.classname}
+         * @return
+         */
+        @Delete("DELETE FROM ${name} WHERE ${field.name} = #{${field.classname}}")
+        public boolean delete${className}sBy${field.className}(String ${field.classname});
+
+        @Select("SELECT * FROM ${name} WHERE ${field.name} = #{${field.classname}}")
+        public List<${className}> select${className}sBy${field.className}(String ${field.classname});
+    #end
+  #end
+
 }

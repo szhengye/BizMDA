@@ -30,9 +30,21 @@ templates:
    target: ${mda.resourcePath}/db/${module}/${name}.sql
    #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口）
  - file: QueryList1.vue.vm
-   model: VIEW-QUERY-LIST1
+   model: VIEW-QUERY-LIST-1
    target: ${mda.resourcePath}/src/views/${module}/${className}.vue
    #数据列表的弹出modal窗口数据编辑VUE页面文件
  - file: QueryList1Modal.vue.vm
-   model: VIEW-QUERY-LIST1
+   model: VIEW-QUERY-LIST-1
    target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
+   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口，modal窗口含子表操作）
+ - file: QueryList1.vue.vm
+   model: VIEW-QUERY-LIST-2
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据列表的弹出modal窗口数据编辑VUE页面文件
+ - file: QueryList2Modal.vue.vm
+   model: VIEW-QUERY-LIST-2
+   target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
+   #数据列表的弹出modal窗口数据编辑VUE页面文件
+ - file: dictionary.js.vm
+   model: dicts
+   target: ${mda.resourcePath}/src/config/MdaDictionary.js
