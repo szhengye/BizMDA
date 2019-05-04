@@ -14,7 +14,7 @@ BizMDA是一个基于模型驱动架构的商业应用开发平台，支持多�
 * 根据菜单模型，生成功能入口的呈现代码和相关配置文件。
 * 支持WEB应用、APP应用和小程序的开发。
 * 支持多种开发框架和开发脚手架，并且能方便扩展到新的开发框架和开发脚手架。
-![image](pic/readme-1.png)
+![image](https://www.bizmda.com/pic/readme-1.jpg)
 
 ### 安装
 1. 从[BizMDA](https://github.com/szhengye/BizMDA)中Clone下载项目源码；
