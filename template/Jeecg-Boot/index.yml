@@ -32,7 +32,7 @@ templates:
  - file: QueryList1.vue.vm
    model: VIEW-QUERY-LIST-1
    target: ${mda.resourcePath}/src/views/${module}/${className}.vue
-   #数据列表的弹出modal窗口数据编辑VUE页面文件
+   #同上，为弹出的modal页面
  - file: QueryList1Modal.vue.vm
    model: VIEW-QUERY-LIST-1
    target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
@@ -40,11 +40,11 @@ templates:
  - file: QueryList1.vue.vm
    model: VIEW-QUERY-LIST-2
    target: ${mda.resourcePath}/src/views/${module}/${className}.vue
-   #数据列表的弹出modal窗口数据编辑VUE页面文件
+   #同上，为弹出的modal页面
  - file: QueryList2Modal.vue.vm
    model: VIEW-QUERY-LIST-2
    target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
-   #数据列表的弹出modal窗口数据编辑VUE页面文件
+   #字典文件加载JS文件
  - file: dictionary.js.vm
    model: dicts
    target: ${mda.resourcePath}/src/config/MdaDictionary.js

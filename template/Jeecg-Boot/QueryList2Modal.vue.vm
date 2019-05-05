@@ -95,6 +95,9 @@
 
                                 </a-row>
                             </div>
+                            <div class="operate">
+                                <a-button type="dashed" style="width: 99%" icon="plus" @click="addRow${component.className}">添加</a-button>
+                            </div>
                         </a-tab-pane>
 #end
 #end
