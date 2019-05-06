@@ -150,6 +150,43 @@ public class ${className}Controller {
 
         return result;
     }
+
+    /**
+      *   通过id删除（含子表数据删除）
+     * @param id
+     * @return
+     */
+    @DeleteMapping(value = "/deleteMain")
+    public Result<${className}> deleteMain(@RequestParam(name="id",required=true) String id) {
+        Result<${className}> result = new Result<${className}>();
+        ${className} ${classname} = ${classname}Service.getById(id);
+        if(${classname}==null) {
+            result.error500("未找到对应实体");
+        }else {
+            ${classname}Service.delMain(id);
+            result.success("删除成功!");
+        }
+
+        return result;
+    }
+
+    /**
+      *  批量删除（含子表记录删除）
+     * @param ids
+     * @return
+     */
+    @DeleteMapping(value = "/deleteBatchMain")
+    public Result<${className}> deleteBatchMain(@RequestParam(name="ids",required=true) String ids) {
+        Result<${className}> result = new Result<${className}>();
+        if(ids==null || "".equals(ids.trim())) {
+            result.error500("参数不识别！");
+        }else {
+            this.${classname}Service.delBatchMain(Arrays.asList(ids.split(",")));
+            result.success("删除成功!");
+        }
+        return result;
+    }
+
 #end
 
     /**
