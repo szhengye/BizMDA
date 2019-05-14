@@ -1,0 +1,254 @@
+#foreach ($component in $components)
+  #if(${component.type} == "SECTION")
+    #set($section_component = $component)
+    #break
+  #end
+#end
+
+<template>
+    <a-card :body-style="{padding: '24px 32px'}" :bordered="false">
+            <a-form :form="form">
+                <a-row :gutter="16">
+#foreach($field in $section_component.fields)
+#if(${field.view.span} <= 6)
+  #set($labelCol = 12)
+  #set($wrapperCol = ${field.view.span} * 4 - 12)
+                  <a-col :span="6">#elseif(${field.view.span} <=12)
+  #set($labelCol = 6)
+  #set($wrapperCol = ${field.view.span} * 2 - 6)
+                  <a-col :span="12">#elseif(${field.view.span} <=18)
+  #set($labelCol = 4)
+  #set($tmp1 = ${field.view.span} * 1.33 - 4)
+  #set($wrapperCol = $number.format("#0",$tmp1))
+                  <a-col :span="18">#elseif(${field.view.span} <=24)
+  #set($labelCol = 3)
+  #set($wrapperCol = ${field.view.span} - 3)
+                  <a-col :span="24">#else
+  #set($labelCol = 3)
+  #set($wrapperCol = 21)
+<a-col :span="24">#end
+
+                    <a-form-item
+                        :labelCol="{span: $labelCol}"
+                        :wrapperCol="{span: $wrapperCol}"
+                        label="${field.label}">
+#if(${field.inputType} == "select")
+                        <a-select v-decorator="['${field.classname}', {}]">
+                            <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
+                        </a-select>
+#elseif(${field.inputType} == "input")
+                        <a-input disabled=true v-decorator="['${field.classname}', {}]" />
+#else
+                        {{model.${field.classname}}}
+#end
+                    </a-form-item>
+                  </a-col>
+  #if(${field.view.newLine})
+                </a-row>
+                <a-row :gutter="16">
+  #end
+#end
+                </a-row>
+            </a-form>
+            <div class="table-operator" style="margin-top: 5px;text-align: center">
+                <a-button type="primary" @click="clickDelete" icon="delete">删除</a-button>
+                <a-button style="margin-left: 8px" @click="clickBack" icon="close">返回</a-button>
+            </div>
+
+        <!-- 子表单区域 -->
+        <a-tabs defaultActiveKey="1" >
+          #set($_mda_count = 0)
+          #foreach ($component in $components)
+            #if(${component.type} == "DETAIL")
+              #set($_mda_count = $_mda_count + 1)
+                <a-tab-pane tab="${component.label}" key="$_mda_count">
+                    <a-table
+                            ref="table-${component.table.name}"
+                            size="middle"
+                            bordered
+                            rowKey="${component.table.primaryKeyField.classname}"
+                            :columns="${component.table.classname}Columns"
+                            :dataSource="${component.table.classname}DataSource"
+                            :pagination=false>
+
+        <span slot="action" slot-scope="text, record">
+          <a @click="handle${component.table.className}Edit(record)">编辑</a>
+
+          <a-divider type="vertical"/>
+          <a-dropdown>
+            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <a-popconfirm title="确定删除吗?" @confirm="() => handle${component.table.className}Delete(record.custNo)">
+                  <a>删除</a>
+                </a-popconfirm>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </span>
+
+                    </a-table>
+
+                    <!-- 操作按钮区域 -->
+                    <div class="table-operator" style="margin-top: 5px;text-align: center">
+                        <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
+                        <a-button style="margin-left: 8px" @click="clickBack" icon="close">返回</a-button>
+                    </div>
+                </a-tab-pane>
+            #end
+          #end
+
+        </a-tabs>
+    </a-card>
+</template>
+
+<script>
+    import { getAction } from '@/api/manage'
+    import {dicts} from '@/config/MdaDictionary.js'
+    import {filterDictText} from '@/components/dict/JDictSelectUtil'
+    // import pick from 'lodash.pick'
+    // import moment from "moment"
+
+    export default {
+        data () {
+            return {
+                title:"操作",
+                visible: false,
+                selectOptions: {},
+
+#foreach ($component in $components)
+#if(${component.type} == "DETAIL")
+
+                // 表头
+                ${component.table.classname}Columns: [
+                  #foreach($field in ${component.fields})
+
+                      {
+                          title: '${field.label}',
+                          align: "center",
+                          dataIndex: '${field.classname}'#if(${field.inputType} == "select"),
+                          customRender: (text) => {
+                              //字典值替换通用方法
+                              return filterDictText(this.selectOptions['${field.dictName}'], text);
+                          }
+                      #end
+
+                      },
+                  #end
+                    {
+                        title: '操作',
+                        dataIndex: 'action',
+                        align: "center",
+                        scopedSlots: {customRender: 'action'},
+                    }
+                ],
+                ${component.table.classname}DataSource:[],
+ #end
+  #end
+                type: 'add',
+                // eventName: '',
+                // confirmLoading: false,
+                form: this.$form.createForm(this),
+                validatorRules:{
+                },
+                url: {
+                    add: "/${module}/${table.classname}/add",
+                    edit: "/${module}/${table.classname}/edit",
+                    delete: "/${module}/${table.classname}/deleteMain",
+                    deleteBatch: "/${module}/${table.classname}/deleteBatchMain",
+                },
+            }
+        },
+        created () {
+            this.selectOptions = dicts;
+            this.loadData();
+        },
+        methods: {
+            loadData() {
+                this.model = {};
+#foreach ($component in $components)
+  #if(${component.type} == "DETAIL")
+
+                this.${component.classname}DataSource = [{}];
+  #end
+#end
+
+                let id = this.$route.query.id;
+                if (typeof(id) == "string") {
+                    getAction("/${module}/${table.classname}/queryById", {id:id}).then((res) => {
+                        if (res.success) {
+                            this.model = res.result;
+                            this.initFieldsValue();
+                        }
+                        else {
+                            this.${usd}message.error(res.message);
+                        }
+                    })
+                }
+            },
+
+            initFieldsValue() {
+                let initFieldsString = this.$route.query.initFields;
+                if (typeof(initFieldsString) == "string") {
+                    let initFields = $.parseJSON('${initFieldsString}');
+                    this.model = Object.assign(this.model, initFields);
+
+                }
+                this.$nextTick(() => {
+  #foreach($field in $section_component.fields)
+    #if(${field.type} == "datetime")
+
+                  this.form.setFieldsValue({${field.classname}:
+                    this.model.${field.classname}? moment(this.model.${field.classname}, 'YYYY-MM-DD HH:mm:ss') : null
+                  })
+    #elseif(${field.type} == "date")
+
+                  this.form.setFieldsValue({${field.classname}:
+                    this.model.${field.classname}? moment(this.model.${field.classname}) : null
+                  })
+    #else
+
+                  this.form.setFieldsValue({${field.classname}:
+                    this.model.${field.classname}})
+    #end
+  #end
+                });
+                this.loadChildList();
+            },
+
+            loadChildList() {
+                //--------------------------------------------------------
+                //初始化明细表数据
+                console.log(this.model.${section_component.primaryKeyField.classname})
+                if (this.model.${section_component.primaryKeyField.classname}) {
+                    let params = {id: this.model.${section_component.primaryKeyField.classname}}
+#foreach ($component in $components)
+  #if(${component.type} == "DETAIL")
+    #foreach($field in $component.table.fields)
+      #if(${field.primaryKeyTableName} == ${section_component.table.name})
+                    //初始化${component.label}列表
+                    getAction("/${component.table.module}/${component.table.classname}/query${component.table.className}ListBy${field.className}", params).then((res) => {
+                        if (res.success) {
+                          this.${component.table.classname}DataSource = res.result;
+                          this.$forceUpdate()
+                        }
+                        else {
+                            this.${usd}message.error(res.message);
+                        }
+                    })
+      #end
+    #end
+  #end
+#end
+
+                }
+                //--------------------------------------------------------
+            },
+
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

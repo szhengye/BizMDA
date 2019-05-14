@@ -26,7 +26,7 @@ public class ComponentEntity {
 	private TableEntity table;
 	//表的备注
 	private String label;
-	private String module;
+//	private String module;
 	private String primaryKey;
 	private String primaryKeyType;
 	private boolean hasStatus;
@@ -57,6 +57,7 @@ public class ComponentEntity {
 		this.view = viewMap;
 		this.fields = new ArrayList<FieldEntity>();
 		this.table = table;
+		this.actions = new ArrayList<ActionEntity>();
 	}
 
 	public String getClassName() {

@@ -42,8 +42,8 @@ public class DataGenerator {
         VelocityEngine ve = new VelocityEngine();
         ve.init();
         
-		for(String key:mdaConfig.getDataMap().keySet()) {
-			TableEntity tableEntity = mdaConfig.getDataMap().get(key);
+		for(String key:mdaConfig.getTableMap().keySet()) {
+			TableEntity tableEntity = mdaConfig.getTableMap().get(key);
             log.info("data before:"+tableEntity);
 	        //封装模板数据
 	        Map map = tableEntity.toMap();

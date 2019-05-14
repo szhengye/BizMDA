@@ -1,0 +1,34 @@
+#标签
+label: 客户列表
+#所属模块
+module: crm
+#视图展现模块
+model: EDIT-FORM-1
+#相关数据表
+tableName: customer
+#查询条件域列表
+components:
+    #视图类型：FORM表单组件
+  - type: SECTION
+    #视图扩展属性
+    view:
+    fields:
+      #域名
+      - name: cust_no
+        view:
+          span: 12
+      - name: cust_name
+        view:
+          span: 24
+      - name: cust_region
+        view:
+          span: 12
+          newLine: true
+      - name: cust_address
+        view:
+          span: 12
+      - name: cust_registered_capital
+        view:
+          span: 8
+    actions:
+

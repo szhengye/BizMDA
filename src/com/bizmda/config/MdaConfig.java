@@ -20,7 +20,7 @@ import lombok.extern.java.Log;
 @Log
 public class MdaConfig {
 	private MdaEntity mdaEntity;
-	private Map<String, TableEntity> dataMap;
+	private Map<String, TableEntity> tableMap;
 	private Map<String, DictionaryEntity> dictionaryMap;
 	private Map<String, ViewEntity> viewMap;
 	
@@ -45,42 +45,51 @@ public class MdaConfig {
 		this.dictionaryMap = new HashMap<String, DictionaryEntity>();
 		List<File> dictFileList = GenUtils.getFileList(configPath+"/dictionary");
 		for(File dictFile:dictFileList) {
-            
+			if (!dictFile.getName().endsWith(".yml"))
+				continue;
+			String name = dictFile.getName().substring(0,dictFile.getName().length()-4);
+
 			try {
 				map = (Map)yaml.load(new FileInputStream(dictFile));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            log.info("dict:"+map.toString());
+			map.put("name",name);
+//            log.info("dict:"+map.toString());
             DictionaryEntity dictionaryEntity = new DictionaryEntity(map);
             log.info("dictionaryEntity:"+dictionaryEntity.toString());
             this.dictionaryMap.put(dictionaryEntity.getName(), dictionaryEntity);
 		}
 
-		this.dataMap = new HashMap<String, TableEntity>();
+		this.tableMap = new HashMap<String, TableEntity>();
 		List<File> dataFileList = GenUtils.getFileList(configPath+"/data");
 		for(File dataFile:dataFileList) {
- 			try {
+			if (!dataFile.getName().endsWith(".yml"))
+				continue;
+			String name = dataFile.getName().substring(0,dataFile.getName().length()-4);
+
+			try {
 				map = (Map)yaml.load(new FileInputStream(dataFile));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            log.info(map.toString());
+			map.put("name",name);
+//            log.info(map.toString());
             TableEntity tableEntity = new TableEntity(map);
             log.info("data:"+tableEntity.toString());
-            this.dataMap.put(tableEntity.getName(), tableEntity);
+            this.tableMap.put(tableEntity.getName(), tableEntity);
 		}
 
 		//处理primaryKeyTable
-		for(String tableName:this.dataMap.keySet()) {
-			TableEntity tableEntity = this.dataMap.get(tableName);
+		for(String tableName:this.tableMap.keySet()) {
+			TableEntity tableEntity = this.tableMap.get(tableName);
 			for(FieldEntity fieldEntity:tableEntity.getFields()) {
 				String primaryKeyTableName = fieldEntity.getPrimaryKeyTableName();
 				if (primaryKeyTableName == null)
 					continue;
-				TableEntity primaryKeyTableEntity = this.dataMap.get(primaryKeyTableName);
+				TableEntity primaryKeyTableEntity = this.tableMap.get(primaryKeyTableName);
 				if (primaryKeyTableEntity == null) {
 					throw new MdaException("错误：域["+primaryKeyTableName+"."
 							+fieldEntity.getName()
@@ -89,21 +98,25 @@ public class MdaConfig {
 				fieldEntity.setPrimaryKeyTable(primaryKeyTableEntity);
 				ForeignKeyTableEntity foreignKeyTableEntity = new ForeignKeyTableEntity(tableEntity,fieldEntity);
 				primaryKeyTableEntity.addForeignKeyTableEntity(foreignKeyTableEntity);
-//				this.dataMap.put(primaryKeyTableName,primaryKeyTableEntity);
-				log.info("处理primaryKeyTable:"+this.dataMap);
+//				this.tableMap.put(primaryKeyTableName,primaryKeyTableEntity);
+				log.info("处理primaryKeyTable:"+this.tableMap);
 			}
 		}
 
 		this.viewMap = new HashMap<String, ViewEntity>();
 		List<File> viewFileList = GenUtils.getFileList(configPath+"/view");
 		for(File viewFile:viewFileList) {
+			if (!viewFile.getName().endsWith(".yml"))
+				continue;
+			String name = viewFile.getName().substring(0,viewFile.getName().length()-4);
 			try {
 				map = (Map)yaml.load(new FileInputStream(viewFile));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			log.info(map.toString());
+			map.put("name",name);
+//			log.info(map.toString());
 			ViewEntity viewEntity = new ViewEntity(map);
 			viewEntity.setView((Map)map.get("view"));
 			log.info("view:"+viewEntity.toString());

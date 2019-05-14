@@ -3,7 +3,7 @@ label: 客户列表
 #所属模块
 module: crm
 #视图展现模块
-model: VIEW-QUERY-LIST-2
+model: VIEW-LIST
 #查询条件域列表
 components:
   #视图类型：查询条件组件
@@ -53,52 +53,39 @@ components:
       - name: cust_region
       - name: cust_address
       - name: cust_registered_capital
+    #按钮动作
     actions:
-    #视图类型：弹出编辑modal窗口主表组件
-  - type: MODAL-MASTER
-    #相关数据表
-    tableName: customer
-    #视图扩展属性
-    view:
-      width: 1200
-    fields:
-      #域名
-      - name: cust_no
-        view:
-          span: 12
-      - name: cust_name
-        view:
-          span: 24
-      - name: cust_region
-        view:
-          span: 12
-          newLine: true
-      - name: cust_address
-        view:
-          span: 12
-      - name: cust_registered_capital
-        view:
-          span: 8
-    actions:
-    #视图类型：弹出编辑modal窗口明细表组件
-  - type: MODAL-DETAIL
-    #相关数据表
-    tableName: cust_linkman
-    #视图扩展属性
-    view:
-    fields:
-      #域名
-      - name: link_name
-        view:
-          span: 5
-      - name: link_sex
-        view:
-          span: 4
-      - name: link_position
-        view:
-          span: 6
-      - name: link_age
-        view:
-          span: 3
-    actions:
-
+      #动作类型
+      - type: LIST-OPEN-VIEW
+        label: 查看
+        icon: read
+        params:
+          view: /crm/CustomerForm5
+          query: "{id: record.custNo}"
+      - type: LIST-DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"
+      - type: LIST-DELETE
+        label: 删除
+        icon: delete
+      - type: OPEN-VIEW
+        label: 打开视图
+        icon: folder-open"
+        params:
+          view: /crm/CustomerForm5
+      - type: DO-SERVICE
+        label: 执行服务
+        icon: interation
+        params:
+          method: delete
+          url: /crm/customer/delete
+      - type: EXPORT-EXCEL
+        label: 导出
+        icon: download
+      - type: IMPORT-EXCEL
+        label: 导入
+        icon: import

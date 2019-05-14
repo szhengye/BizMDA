@@ -28,6 +28,10 @@ templates:
  - file: create-table.sql.vm
    model: data
    target: ${mda.resourcePath}/db/${module}/${name}.sql
+   #字典文件加载JS文件
+ - file: dictionary.js.vm
+   model: dicts
+   target: ${mda.resourcePath}/src/config/MdaDictionary.js
    #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口）
  - file: QueryList1.vue.vm
    model: VIEW-QUERY-LIST-1
@@ -44,7 +48,23 @@ templates:
  - file: QueryList2Modal.vue.vm
    model: VIEW-QUERY-LIST-2
    target: ${mda.resourcePath}/src/views/${module}/modules/${className}Modal.vue
-   #字典文件加载JS文件
- - file: dictionary.js.vm
-   model: dicts
-   target: ${mda.resourcePath}/src/config/MdaDictionary.js
+   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出）
+ - file: QueryList3.vue.vm
+   model: VIEW-QUERY-LIST-3
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据编辑表单
+ - file: EditForm1.vue.vm
+   model: EDIT-FORM-1
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据查阅表单（含明细子列表）
+ - file: ViewForm1.vue.vm
+   model: VIEW-FORM-1
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出）
+ - file: List.vue.vm
+   model: VIEW-LIST
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue
+   #数据表单，支持明细子表
+ - file: Form.vue.vm
+   model: VIEW-FORM
+   target: ${mda.resourcePath}/src/views/${module}/${className}.vue

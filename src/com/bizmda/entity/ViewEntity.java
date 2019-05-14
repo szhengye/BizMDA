@@ -29,6 +29,8 @@ public class ViewEntity {
     //表的备注
     private String label;
     private String module;
+    private String tableName;
+    private TableEntity table;
     private Map view;
 
     private List<ComponentEntity> components;
@@ -41,15 +43,28 @@ public class ViewEntity {
         this.model = (String)map.get("model");
         this.label = (String)map.get("label");
         this.module = (String)map.get("module");
+        this.tableName = (String)map.get("tableName");
+        if (tableName != null) {
+            this.table = mdaConfig.getTableMap().get(tableName);
+            if (this.table == null) {
+                throw new MdaException("视图" + this.name + "中组件的数据表" + tableName + "没有定义！");
+            }
+        }
         List<Map> componentList = (List<Map>)map.get("components");
 
         this.components = new ArrayList<ComponentEntity>();
         for(Map component:componentList) {
-            String tableName = (String)component.get("tableName");
             String type = (String)component.get("type");
-            TableEntity tableEntity = mdaConfig.getDataMap().get(tableName);
-            if (tableEntity == null) {
-                throw new MdaException("视图"+this.name+"中组件的数据表"+tableName+"没有定义！");
+            String tableName = (String)component.get("tableName");
+            TableEntity tableEntity = null;
+            if (tableName == null) {
+                tableEntity = this.table;
+            }
+            else {
+                tableEntity = mdaConfig.getTableMap().get(tableName);
+                if (tableEntity == null) {
+                    throw new MdaException("视图" + this.name + "中组件的数据表" + tableName + "没有定义！");
+                }
             }
             Map viewMap = (Map)component.get("view");
             ComponentEntity componentEntity = new ComponentEntity(tableEntity,viewMap);
@@ -79,6 +94,9 @@ public class ViewEntity {
             if (actionList != null) {
                 for (Map actionMap : actionList) {
                     ActionEntity actionEntity = new ActionEntity(actionMap);
+                    log.info(actionMap.toString());
+                    log.info("action:"+actionEntity.toString());
+
                     actionEntityList.add(actionEntity);
                 }
             }
@@ -102,6 +120,7 @@ public class ViewEntity {
         map.put("module",this.module);
         map.put("model",this.model);
         map.put("components", this.components);
+        map.put("table",this.table);
         map.put("className", this.className);
         map.put("classname", this.classname);
         return map;
