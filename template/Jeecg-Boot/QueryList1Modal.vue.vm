@@ -83,8 +83,8 @@
                 validatorRules:{
                 },
                 url: {
-                    add: "/${modal_component.module}/${modal_component.classname}/add",
-                    edit: "/${modal_component.module}/${modal_component.classname}/edit",
+                    add: "/${modal_component.table.module}/${modal_component.table.classname}/add",
+                    edit: "/${modal_component.table.module}/${modal_component.table.classname}/edit",
                 },
             }
         },

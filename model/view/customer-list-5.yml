@@ -61,7 +61,7 @@ components:
         icon: read
         params:
           view: /crm/CustomerForm5
-          query: "{id: record.custNo}"
+          query: "{mda_id: record.custNo}"
       - type: LIST-DO-SERVICE
         label: 删除服务
         icon: delete
@@ -69,6 +69,7 @@ components:
           method: delete
           url: /crm/customer/delete
           data: "{id: record.custNo}"
+          confirm: true
       - type: LIST-DELETE
         label: 删除
         icon: delete
@@ -77,6 +78,7 @@ components:
         icon: folder-open"
         params:
           view: /crm/CustomerForm5
+          confirm: true
       - type: DO-SERVICE
         label: 执行服务
         icon: interation

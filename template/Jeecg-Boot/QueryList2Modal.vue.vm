@@ -140,14 +140,14 @@
                 validatorRules:{
                 },
                 url: {
-                    add: "/${modal_component.module}/${modal_component.classname}/addMain",
-                    edit: "/${modal_component.module}/${modal_component.classname}/editMain",
+                    add: "/${modal_component.table.module}/${modal_component.table.classname}/addMain",
+                    edit: "/${modal_component.table.module}/${modal_component.table.classname}/editMain",
 #foreach ($component in $components)
 #if(${component.type} == "MODAL-DETAIL")
   #foreach($field in $component.table.fields)
     #if(${field.primaryKeyTableName})
 
-                    ${component.classname}List: "/${component.module}/${component.classname}/query${component.className}ListBy${field.className}",
+                    ${component.classname}List: "/${component.table.module}/${component.table.classname}/query${component.table.className}ListBy${field.className}",
     #end
   #end
 #end

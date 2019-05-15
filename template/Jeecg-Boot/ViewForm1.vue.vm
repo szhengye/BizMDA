@@ -161,12 +161,12 @@
     #foreach($field in $component.table.fields)
       #if(${field.primaryKeyTableName})
 
-                    ${component.classname}Delete: "/${component.module}/${component.classname}/deleteMain",
-                    ${component.classname}DeleteBatch: "/${component.module}/${component.classname}/deleteBatchMain",
+                    ${component.classname}Delete: "/${component.table.module}/${component.table.classname}/deleteMain",
+                    ${component.classname}DeleteBatch: "/${component.table.module}/${component.table.classname}/deleteBatchMain",
       #end
       #if(${field.primaryKeyTableName} == ${section_component.table.name})
 
-                    ${component.classname}List: "/${component.module}/${component.classname}/query${component.className}ListBy${field.className}",
+                    ${component.classname}List: "/${component.table.module}/${component.table.classname}/query${component.className}ListBy${field.className}",
       #end
     #end
   #end

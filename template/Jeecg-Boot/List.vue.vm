@@ -185,28 +185,58 @@
         #if(${action.type} == "OPEN-VIEW")
 
         clickButton${_count}() {
+            var that = this;
+            #if(${action.params.confirm})
+
+            this.$confirm({
+                title: '确认${action.label}?',
+            onOk() {
+            #end
           #if(${action.params.query})
 
               let query = ${action.params.query};
-              this.${usd}router.push({path:'${action.params.view}',query:query});
+              that.${usd}router.push({path:'${action.params.view}',query:query});
           #else
 
-              this.${usd}router.push({path:'${action.params.view}'});
+              that.${usd}router.push({path:'${action.params.view}'});
+          #end
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
           #end
 
         },
         #elseif(${action.type} == "DO-SERVICE")
 
         clickButton${_count}() {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
+
             let data = #if(${action.params.data})${action.params.data}#else {}#end;
             ${action.params.method}Action("${action.params.url}", data).then((res) => {
                 if (res.success) {
-                    this.${usd}message.success(res.message);
+                    that.${usd}message.success(res.message);
                     this.loadData();
                 } else {
-                    this.${usd}message.warning(res.message);
+                    that.${usd}message.warning(res.message);
                 }
             });
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
         },
         #elseif(${action.type} == "EXPORT-EXCEL")
 
@@ -231,28 +261,57 @@
         #elseif(${action.type} == "LIST-OPEN-VIEW")
 
         clickButton${_count}(record) {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
           #if(${action.params.query})
 
               let query = ${action.params.query};
-              this.${usd}router.push({path:'${action.params.view}',query:query});
+              that.${usd}router.push({path:'${action.params.view}',query:query});
           #else
 
-              this.${usd}router.push({path:'${action.params.view}'});
+              that.${usd}router.push({path:'${action.params.view}'});
+          #end
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
           #end
 
         },
         #elseif(${action.type} == "LIST-DO-SERVICE")
 
         clickButton${_count}(record) {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
             let data = #if(${action.params.data})${action.params.data}#else {}#end;
             ${action.params.method}Action("${action.params.url}", data).then((res) => {
                 if (res.success) {
-                    this.${usd}message.success(res.message);
-                    this.loadData();
+                    that.${usd}message.success(res.message);
+                    that.loadData();
                 } else {
-                    this.${usd}message.warning(res.message);
+                    that.${usd}message.warning(res.message);
                 }
             });
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
         },
         #elseif(${action.type} == "LIST-DELETE")
 

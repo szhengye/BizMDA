@@ -32,12 +32,32 @@
                         :labelCol="{span: $labelCol}"
                         :wrapperCol="{span: $wrapperCol}"
                         label="${field.label}">
-#if(${field.inputType} == "select")
+#if(${field.inputType} == "text")
+  #if(${field.view.showType} == "text")
+
+                        {{model.${field.classname}}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-input disabled=true v-decorator="['${field.classname}', {}]" />
+  #else
+
+                        <a-input v-decorator="['${field.classname}', {}]" />
+  #end
+#elseif(${field.inputType} == "textarea")
+  #if(${field.view.showType} == "text")
+
+                        {{model.${field.classname}}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-input disabled autosize v-decorator="['${field.classname}', {}]" />
+  #else
+
+                        <a-input autosize v-decorator="['${field.classname}', {}]" />
+  #end
+#elseif(${field.inputType} == "select")
                         <a-select v-decorator="['${field.classname}', {}]">
                             <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
                         </a-select>
-#elseif(${field.inputType} == "input")
-                        <a-input disabled=true v-decorator="['${field.classname}', {}]" />
 #else
                         {{model.${field.classname}}}
 #end
@@ -51,8 +71,17 @@
                 </a-row>
             </a-form>
             <div class="table-operator" style="margin-top: 5px;text-align: center">
-                <a-button type="primary" @click="clickDelete" icon="delete">删除</a-button>
-                <a-button style="margin-left: 8px" @click="clickBack" icon="close">返回</a-button>
+#set($action_no = 0)
+#foreach($action in $section_component.actions)
+  #set($action_no = $action_no + 1)
+
+                <a-button type="primary" @click="clickButton${action_no}" #if(${action.icon})icon="${action.icon}"#end style="margin-left: 8px">${action.label}</a-button>
+  #if(${action.type} == "OPEN-VIEW")
+    #elseif(${action.type} == "DO-SERVICE")
+    #else
+  #end
+#end
+
             </div>
 
         <!-- 子表单区域 -->
@@ -72,27 +101,34 @@
                             :pagination=false>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handle${component.table.className}Edit(record)">编辑</a>
+#set($_flag=false)
+#foreach($action in $component.actions)
+  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+    #set($action_no = $action_no + 1)
+    #if($_flag)
 
-          <a-divider type="vertical"/>
-          <a-dropdown>
-            <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
-            <a-menu slot="overlay">
-              <a-menu-item>
-                <a-popconfirm title="确定删除吗?" @confirm="() => handle${component.table.className}Delete(record.custNo)">
-                  <a>删除</a>
-                </a-popconfirm>
-              </a-menu-item>
-            </a-menu>
-          </a-dropdown>
+          <a-divider type="vertical"/>#else #set($_flag=true) #end
+
+          <a @click="clickButton${action_no}(record)">${action.label}</a>
+  #end
+#end
+
         </span>
 
                     </a-table>
 
                     <!-- 操作按钮区域 -->
                     <div class="table-operator" style="margin-top: 5px;text-align: center">
-                        <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-                        <a-button style="margin-left: 8px" @click="clickBack" icon="close">返回</a-button>
+#set($_flag=false)
+#foreach($action in $component.actions)
+  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+  #else
+    #set($action_no = $action_no + 1)
+
+                        <a-button type="primary" @click="clickButton${action_no}" #if(${action.icon})icon="${action.icon}"#end style="margin-left: 8px">${action.label}</a-button>
+  #end
+#end
+
                     </div>
                 </a-tab-pane>
             #end
@@ -169,16 +205,22 @@
 #foreach ($component in $components)
   #if(${component.type} == "DETAIL")
 
-                this.${component.classname}DataSource = [{}];
+                this.${component.classname}DataSource = [];
   #end
 #end
 
-                let id = this.$route.query.id;
+                let id = this.$route.query.mda_id;
                 if (typeof(id) == "string") {
                     getAction("/${module}/${table.classname}/queryById", {id:id}).then((res) => {
                         if (res.success) {
                             this.model = res.result;
                             this.initFieldsValue();
+#foreach ($component in $components)
+  #if(${component.type} == "DETAIL")
+
+                            this.load${component.table.className}List(this);
+  #end
+#end
                         }
                         else {
                             this.${usd}message.error(res.message);
@@ -188,12 +230,7 @@
             },
 
             initFieldsValue() {
-                let initFieldsString = this.$route.query.initFields;
-                if (typeof(initFieldsString) == "string") {
-                    let initFields = $.parseJSON('${initFieldsString}');
-                    this.model = Object.assign(this.model, initFields);
-
-                }
+                this.model = Object.assign(this.model, this.$route.query);
                 this.$nextTick(() => {
   #foreach($field in $section_component.fields)
     #if(${field.type} == "datetime")
@@ -213,37 +250,154 @@
     #end
   #end
                 });
-                this.loadChildList();
             },
 
-            loadChildList() {
-                //--------------------------------------------------------
-                //初始化明细表数据
-                console.log(this.model.${section_component.primaryKeyField.classname})
-                if (this.model.${section_component.primaryKeyField.classname}) {
-                    let params = {id: this.model.${section_component.primaryKeyField.classname}}
+
 #foreach ($component in $components)
   #if(${component.type} == "DETAIL")
+            load${component.table.className}List(that) {
+              //--------------------------------------------------------
+              //初始化明细表数据
+              if (that.model.${section_component.primaryKeyField.classname}) {
+                let params = {id: this.model.${section_component.primaryKeyField.classname}}
     #foreach($field in $component.table.fields)
       #if(${field.primaryKeyTableName} == ${section_component.table.name})
-                    //初始化${component.label}列表
-                    getAction("/${component.table.module}/${component.table.classname}/query${component.table.className}ListBy${field.className}", params).then((res) => {
-                        if (res.success) {
-                          this.${component.table.classname}DataSource = res.result;
-                          this.$forceUpdate()
-                        }
-                        else {
-                            this.${usd}message.error(res.message);
-                        }
-                    })
+
+                //初始化${component.label}列表
+                getAction(
+                  "/${component.table.module}/${component.table.classname}/query${component.table.className}ListBy${field.className}",
+                  params).then((res) => {
+                  if (res.success) {
+                    that.${component.table.classname}DataSource = res.result;
+                    that.$forceUpdate()
+                  } else {
+                    that.${usd}message.error(res.message);
+                  }
+                  })
+      #end
+    #end
+
+              }
+              //--------------------------------------------------------
+            },
+  #end
+#end
+
+
+      #set($action_no = 0)
+#foreach($action in $section_component.actions)
+  #set($action_no = $action_no + 1)
+  #if(${action.type} == "OPEN-VIEW")
+
+      //表单按钮方法
+      clickButton${action_no}() {
+          let record = this.model;
+        #if(${action.params.query})
+
+          let query = ${action.params.query};
+          this.${usd}router.push({path:'${action.params.view}',query:query});
+        #else
+
+          this.${usd}router.push({path:'${action.params.view}'});
+        #end
+
+      },
+  #elseif(${action.type} == "DO-SERVICE")
+
+      //表单按钮方法
+      clickButton${action_no}() {
+          let record = this.model;
+          let data = #if(${action.params.data})${action.params.data}#else {}#end;
+          ${action.params.method}Action("${action.params.url}", data).then((res) => {
+              if (res.success) {
+                  this.${usd}message.success(res.message);
+                  this.loadData();
+              } else {
+                  this.${usd}message.warning(res.message);
+              }
+          });
+      },
+  #else
+  #end
+#end
+
+#foreach ($component in $components)
+  #if(${component.type} == "DETAIL")
+    #foreach($action in $component.actions)
+      #if(${action.type} == "LIST-OPEN-VIEW")
+        #set($action_no = $action_no + 1)
+
+          //子表单明细按钮方法
+          clickButton${action_no}(record) {
+            #if(${action.params.query})
+
+                let query = ${action.params.query};
+                this.${usd}router.push({path:'${action.params.view}',query:query});
+            #else
+
+                this.${usd}router.push({path:'${action.params.view}'});
+            #end
+
+          },
+
+      #elseif(${action.type} == "LIST-DO-SERVICE")
+        #set($action_no = $action_no + 1)
+
+          //子表单明细按钮方法
+          clickButton${action_no}(record) {
+              let data = #if(${action.params.data})${action.params.data}#else {}#end;
+              ${action.params.method}Action("${action.params.url}", data).then((res) => {
+                  if (res.success) {
+                      this.${usd}message.success(res.message);
+                      this.loadData();
+                  } else {
+                      this.${usd}message.warning(res.message);
+                  }
+              });
+
+          },
+      #else
+      #end
+    #end
+    #foreach($action in $component.actions)
+      #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+      #else
+        #set($action_no = $action_no + 1)
+        #if(${action.type} == "OPEN-VIEW")
+
+            //子表单表单按钮方法
+            clickButton${action_no}() {
+                let record = this.model;
+              #if(${action.params.query})
+
+                  let query = ${action.params.query};
+                  this.${usd}router.push({path:'${action.params.view}',query:query});
+              #else
+
+                  this.${usd}router.push({path:'${action.params.view}'});
+              #end
+
+            },
+        #elseif(${action.type} == "DO-SERVICE")
+
+            //子表单表单按钮方法
+            clickButton${action_no}() {
+                let record = this.model;
+                let data = #if(${action.params.data})${action.params.data}#else {}#end;
+                ${action.params.method}Action("${action.params.url}", data).then((res) => {
+                    if (res.success) {
+                        this.${usd}message.success(res.message);
+                        this.loadData();
+                    } else {
+                        this.${usd}message.warning(res.message);
+                    }
+                });
+            },
+        #end
       #end
     #end
   #end
 #end
-
-                }
-                //--------------------------------------------------------
-            },
 
         }
     }

@@ -17,9 +17,11 @@ components:
       - name: cust_no
         view:
           span: 12
+          showType: text
       - name: cust_name
         view:
           span: 24
+          showType: disabled
       - name: cust_region
         view:
           span: 12
@@ -31,6 +33,19 @@ components:
         view:
           span: 8
     actions:
+      - type: OPEN-VIEW
+        label: 打开视图
+        icon: read
+        params:
+          view: /crm/CustomerForm5
+          query: "{'mda.id': record.custNo}"
+      - type: DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"
     #视图类型：明细表组件
   - type: DETAIL
     #相关数据表
@@ -52,3 +67,29 @@ components:
         view:
           span: 3
     actions:
+      - type: OPEN-VIEW
+        label: 打开视图
+        icon: read
+        params:
+          view: /crm/CustomerForm5
+          query: "{'mda.id': record.custNo}"
+      - type: DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"
+      - type: LIST-OPEN-VIEW
+        label: 查看
+        icon: read
+        params:
+          view: /crm/CustomerForm5
+          query: "{mda_id: record.custNo}"
+      - type: LIST-DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"
