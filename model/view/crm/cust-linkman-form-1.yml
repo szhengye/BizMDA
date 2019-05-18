@@ -1,0 +1,41 @@
+#标签
+label: 联系人列表
+#视图展现模块
+model: VIEW-FORM
+#相关数据表
+tableName: cust_linkman
+#查询条件域列表
+components:
+    #视图类型：FORM表单组件
+  - type: SECTION
+    #视图扩展属性
+    view:
+    fields:
+      #域名
+      - name: link_no
+        view:
+          span: 12
+          showType: text
+      - name: link_name
+        view:
+          span: 24
+      - name: link_cust_no
+        view:
+          span: 24
+          lookupView: /lookup/CustomerLookup
+          lookupLabel: record.custName
+          lookupQuery:
+    actions:
+      - type: OPEN-VIEW
+        label: 打开视图
+        icon: read
+        params:
+          view: /crm/CustomerForm5
+          query: "{'mda.id': record.custNo}"
+      - type: DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"

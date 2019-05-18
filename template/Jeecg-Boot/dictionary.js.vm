@@ -1,15 +1,74 @@
+import {ajaxGetDictItems} from '@/api/api'
+import {getAction} from '@/api/manage'
+
 var dicts = {
 #foreach($dict in $dicts.entrySet())
 	"$dict.key": [
 #foreach($option in $dict.value.dictItems)
 		{
 			"value": "${option.value}",
-			"text": "${option.text}"
+			"label": "${option.text}"
 		},
 #end
 	],
 #end
 };
-export {
-	dicts
-};
+
+export function getOptions(dictCode) {
+	let options = dicts[dictCode];
+	return options;
+}
+/**
+ * 获取字典数组
+ * @param dictCode 字典Code
+ * @return List<Map>
+ */
+export async function initDictOptions(dictCode) {
+	if (!dictCode) {
+		return '字典Code不能为空!';
+	}
+	//获取字典数组
+	let res = await ajaxGetDictItems(dictCode);
+}
+
+/**
+ * 字典值替换文本通用方法
+ * @param dictOptions  字典数组
+ * @param text  字典值
+ * @return String
+ */
+export function filterDictText(dictCode, text) {
+	let re = "";
+	dicts[dictCode].forEach(function (option) {
+		if (text === option.value) {
+			re = option.label;
+		}
+	});
+	return re;
+}
+
+/**
+ * 字典值替换文本通用方法(多选)
+ * @param dictOptions  字典数组
+ * @param text  字典值
+ * @return String
+ */
+export function filterMultiDictText(dictCode, text) {
+	if(!text){
+		return ""
+	}
+	let re = "";
+	let arr = text.split(",")
+	dicts[dictCode].forEach(function (option) {
+		for(let i=0;i<arr.length;i++){
+			if (arr[i] === option.value) {
+				re += option.text+",";
+				break;
+			}
+		}
+	});
+	if(re==""){
+		return "";
+	}
+	return re.substring(0,re.length-1);
+}

@@ -3,6 +3,7 @@ package com.bizmda.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,7 @@ public class MdaConfig {
 		this.dictionaryMap = new HashMap<String, DictionaryEntity>();
 		List<File> dictFileList = GenUtils.getFileList(configPath+"/dictionary");
 		for(File dictFile:dictFileList) {
-			if (!dictFile.getName().endsWith(".yml"))
+			if (!dictFile.getName().toLowerCase().endsWith(".yml"))
 				continue;
 			String name = dictFile.getName().substring(0,dictFile.getName().length()-4);
 
@@ -58,6 +59,10 @@ public class MdaConfig {
 			map.put("name",name);
 //            log.info("dict:"+map.toString());
             DictionaryEntity dictionaryEntity = new DictionaryEntity(map);
+			String modulePath = getModulePath(dictFile,configPath+"/dictionary");
+			String module = modulePath.replace("/",".");
+            dictionaryEntity.setModule(module);
+            dictionaryEntity.setModulePath(modulePath);
             log.info("dictionaryEntity:"+dictionaryEntity.toString());
             this.dictionaryMap.put(dictionaryEntity.getName(), dictionaryEntity);
 		}
@@ -78,6 +83,10 @@ public class MdaConfig {
 			map.put("name",name);
 //            log.info(map.toString());
             TableEntity tableEntity = new TableEntity(map);
+			String modulePath = getModulePath(dataFile,configPath+"/data");
+			String module = modulePath.replace("/",".");
+			tableEntity.setModule(module);
+			tableEntity.setModulePath(modulePath);
             log.info("data:"+tableEntity.toString());
             this.tableMap.put(tableEntity.getName(), tableEntity);
 		}
@@ -119,9 +128,22 @@ public class MdaConfig {
 //			log.info(map.toString());
 			ViewEntity viewEntity = new ViewEntity(map);
 			viewEntity.setView((Map)map.get("view"));
+			String modulePath = getModulePath(viewFile,configPath+"/view");
+			String module = modulePath.replace("/",".");
+			viewEntity.setModule(module);
+			viewEntity.setModulePath(modulePath);
+
 			log.info("view:"+viewEntity.toString());
 			this.viewMap.put(viewEntity.getName(), viewEntity);
 		}
 
-	}	
+	}
+
+	private String getModulePath(File file,String prePath) {
+		String modulePath = file.getAbsolutePath().substring(prePath.length(),file.getAbsolutePath().lastIndexOf('/'));
+		if (modulePath.startsWith("/")) {
+			return modulePath.substring(1);
+		}
+		return modulePath;
+	}
 }

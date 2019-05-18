@@ -13,54 +13,31 @@
 #if(${field.view.span} <= 6)
   #set($labelCol = 12)
   #set($wrapperCol = ${field.view.span} * 4 - 12)
+
                   <a-col :span="6">#elseif(${field.view.span} <=12)
   #set($labelCol = 6)
   #set($wrapperCol = ${field.view.span} * 2 - 6)
+
                   <a-col :span="12">#elseif(${field.view.span} <=18)
   #set($labelCol = 4)
   #set($tmp1 = ${field.view.span} * 1.33 - 4)
   #set($wrapperCol = $number.format("#0",$tmp1))
+
                   <a-col :span="18">#elseif(${field.view.span} <=24)
   #set($labelCol = 3)
   #set($wrapperCol = ${field.view.span} - 3)
+
                   <a-col :span="24">#else
   #set($labelCol = 3)
   #set($wrapperCol = 21)
-<a-col :span="24">#end
+                  <a-col :span="24">#end
 
                     <a-form-item
                         :labelCol="{span: $labelCol}"
                         :wrapperCol="{span: $wrapperCol}"
                         label="${field.label}">
-#if(${field.inputType} == "text")
-  #if(${field.view.showType} == "text")
+#parse("include/form-field.vm")
 
-                        {{model.${field.classname}}}
-  #elseif(${field.view.showType} == "disabled")
-
-                        <a-input disabled=true v-decorator="['${field.classname}', {}]" />
-  #else
-
-                        <a-input v-decorator="['${field.classname}', {}]" />
-  #end
-#elseif(${field.inputType} == "textarea")
-  #if(${field.view.showType} == "text")
-
-                        {{model.${field.classname}}}
-  #elseif(${field.view.showType} == "disabled")
-
-                        <a-input disabled autosize v-decorator="['${field.classname}', {}]" />
-  #else
-
-                        <a-input autosize v-decorator="['${field.classname}', {}]" />
-  #end
-#elseif(${field.inputType} == "select")
-                        <a-select v-decorator="['${field.classname}', {}]">
-                            <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
-                        </a-select>
-#else
-                        {{model.${field.classname}}}
-#end
                     </a-form-item>
                   </a-col>
   #if(${field.view.newLine})
@@ -140,8 +117,8 @@
 
 <script>
     import { getAction } from '@/api/manage'
-    import {dicts} from '@/config/MdaDictionary.js'
-    import {filterDictText} from '@/components/dict/JDictSelectUtil'
+    import {getOptions,filterDictText,initDictOptions} from '@/config/MdaDictionary.js'
+    //import {filterDictText} from '@/components/dict/JDictSelectUtil'
     // import pick from 'lodash.pick'
     // import moment from "moment"
 
@@ -150,26 +127,18 @@
             return {
                 title:"操作",
                 visible: false,
-                selectOptions: {},
+                model: {},
+#foreach($dict in $dicts)
 
+                ${dict.name}Options: [],
+#end
 #foreach ($component in $components)
 #if(${component.type} == "DETAIL")
 
                 // 表头
                 ${component.table.classname}Columns: [
                   #foreach($field in ${component.fields})
-
-                      {
-                          title: '${field.label}',
-                          align: "center",
-                          dataIndex: '${field.classname}'#if(${field.inputType} == "select"),
-                          customRender: (text) => {
-                              //字典值替换通用方法
-                              return filterDictText(this.selectOptions['${field.dictName}'], text);
-                          }
-                      #end
-
-                      },
+#parse("include/list-field.vm")
                   #end
                     {
                         title: '操作',
@@ -196,7 +165,20 @@
             }
         },
         created () {
-            this.selectOptions = dicts;
+#foreach($dict in $dicts)
+#if(${dict.dictItems})
+
+            this.${dict.name}Options = getOptions('${dict.name}');
+#else
+
+            initDictOptions('${dict.name}').then((res) => {
+                if (res.success) {
+                    this.${dict.name}Options = res.result;
+                }
+            });
+#end
+#end
+
             this.loadData();
         },
         methods: {
@@ -231,25 +213,25 @@
 
             initFieldsValue() {
                 this.model = Object.assign(this.model, this.$route.query);
-                this.$nextTick(() => {
-  #foreach($field in $section_component.fields)
-    #if(${field.type} == "datetime")
-
-                  this.form.setFieldsValue({${field.classname}:
-                    this.model.${field.classname}? moment(this.model.${field.classname}, 'YYYY-MM-DD HH:mm:ss') : null
-                  })
-    #elseif(${field.type} == "date")
-
-                  this.form.setFieldsValue({${field.classname}:
-                    this.model.${field.classname}? moment(this.model.${field.classname}) : null
-                  })
-    #else
-
-                  this.form.setFieldsValue({${field.classname}:
-                    this.model.${field.classname}})
-    #end
-  #end
-                });
+  ##               this.$nextTick(() => {
+  ## #foreach($field in $section_component.fields)
+  ##   #if(${field.type} == "datetime")
+  ##
+  ##                 this.form.setFieldsValue({${field.classname}:
+  ##                   this.model.${field.classname}? moment(this.model.${field.classname}, 'YYYY-MM-DD HH:mm:ss') : null
+  ##                 })
+  ##   #elseif(${field.type} == "date")
+  ##
+  ##                 this.form.setFieldsValue({${field.classname}:
+  ##                   this.model.${field.classname}? moment(this.model.${field.classname}) : null
+  ##                 })
+  ##   #else
+  ##
+  ##                 this.form.setFieldsValue({${field.classname}:
+  ##                   this.model.${field.classname}})
+  ##   #end
+  ## #end
+  ##               });
             },
 
 
@@ -349,7 +331,7 @@
               ${action.params.method}Action("${action.params.url}", data).then((res) => {
                   if (res.success) {
                       this.${usd}message.success(res.message);
-                      this.loadData();
+                      this.load${component.table.className}List(this);
                   } else {
                       this.${usd}message.warning(res.message);
                   }
@@ -387,7 +369,7 @@
                 ${action.params.method}Action("${action.params.url}", data).then((res) => {
                     if (res.success) {
                         this.${usd}message.success(res.message);
-                        this.loadData();
+                        this.load${component.table.className}List(this);
                     } else {
                         this.${usd}message.warning(res.message);
                     }

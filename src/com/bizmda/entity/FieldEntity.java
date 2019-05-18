@@ -30,6 +30,7 @@ public class FieldEntity {
 //    private String classname;
     private String javaType;
     private int len;
+    private int dec = 0;
     private String primaryKeyTableName;
     private TableEntity primaryKeyTable;
     private Map view;
@@ -53,6 +54,13 @@ public class FieldEntity {
         else if (this.type.equalsIgnoreCase("money") || this.type.startsWith("decimal(")) {
             this.javaType = "BigDecimal";
             this.len = 8;
+            if (this.type.equalsIgnoreCase("money")) {
+                this.dec = 2;
+            }
+            else {
+                String decString = this.type.substring(this.type.lastIndexOf(',')+1,this.type.lastIndexOf(')'));
+                this.dec = Integer.parseInt(decString);
+            }
         }
         else if (this.type.equalsIgnoreCase("date")) {
             this.javaType = "Date";

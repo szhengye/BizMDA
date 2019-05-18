@@ -10,10 +10,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @ToString
@@ -29,9 +26,11 @@ public class ViewEntity {
     //表的备注
     private String label;
     private String module;
+    private String modulePath;
     private String tableName;
     private TableEntity table;
     private Map view;
+    private Set<DictionaryEntity> dicts;
 
     private List<ComponentEntity> components;
 
@@ -42,7 +41,7 @@ public class ViewEntity {
         this.classname = StringUtils.uncapitalize(this.className);
         this.model = (String)map.get("model");
         this.label = (String)map.get("label");
-        this.module = (String)map.get("module");
+//        this.module = (String)map.get("module");
         this.tableName = (String)map.get("tableName");
         if (tableName != null) {
             this.table = mdaConfig.getTableMap().get(tableName);
@@ -52,6 +51,7 @@ public class ViewEntity {
         }
         List<Map> componentList = (List<Map>)map.get("components");
 
+        this.dicts = new HashSet<DictionaryEntity>();
         this.components = new ArrayList<ComponentEntity>();
         for(Map component:componentList) {
             String type = (String)component.get("type");
@@ -86,6 +86,13 @@ public class ViewEntity {
                 viewMap = (Map)field.get("view");
                 fieldEntity1.setView(viewMap);
                 fieldEntityList.add(fieldEntity1);
+                if(fieldEntity.getDictName() != null) {
+                    DictionaryEntity dictionaryEntity = MdaConfig.getInstance().getDictionaryMap().get(fieldEntity.getDictName());
+                    if(dictionaryEntity == null) {
+                        throw new MdaException("视图" + this.name + "中组件的数据表" + tableName + "的域"+fieldName+"的字典关联定义有误！");
+                    }
+                    this.dicts.add(dictionaryEntity);
+                }
             }
             componentEntity.setFields(fieldEntityList);
 
@@ -113,16 +120,19 @@ public class ViewEntity {
         return classname;
     }
 
+
     public Map toMap() {
         Map map = new HashMap();
         map.put("name", this.name);
         map.put("label", this.label);
         map.put("module",this.module);
+        map.put("modulePath",this.modulePath);
         map.put("model",this.model);
         map.put("components", this.components);
         map.put("table",this.table);
         map.put("className", this.className);
         map.put("classname", this.classname);
+        map.put("dicts",this.dicts);
         return map;
     }
 }

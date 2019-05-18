@@ -1,7 +1,5 @@
 #标签
 label: 客户列表
-#所属模块
-module: crm
 #视图展现模块
 model: VIEW-LIST
 #查询条件域列表

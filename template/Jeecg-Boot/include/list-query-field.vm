@@ -1,0 +1,106 @@
+                    <a-col :md="${field.view.span}">
+#if(${field.inputType} == "text" || ${field.inputType} == "textarea")
+  #if(${field.javaType} == "int" || ${field.javaType} == "BigDecimal")
+    #if(${field.view.queryType} == "GE")
+
+                        <a-form-item label="${field.label}">
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">≥</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(100% - 24px)' }">
+                                <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_begin"></a-input>
+                            </a-form-item>
+                        </a-form-item>
+    #elseif(${field.view.queryType} == "LE")
+
+                        <a-form-item label="${field.label}">
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">≤</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(100% - 24px)' }">
+                                <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_end"></a-input>
+                            </a-form-item>
+                        </a-form-item>
+      #elseif(${field.view.queryType} == "BETWEEN")
+
+                        <a-form-item label="${field.label}">
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                v-model="queryParam.${field.classname}_begin"></a-input>
+                            </a-form-item>
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">-</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                                <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_end"></a-input>
+                            </a-form-item>
+                        </a-form-item>
+      #else
+
+                        <a-form-item label="${field.label}">
+                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}"></a-input>
+                        </a-form-item>
+      #end
+    #elseif(${field.javaType} == "Date")
+      #if(${field.view.queryType} == "GE")
+
+                        <a-form-item label="${field.label}">
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">≥</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(100% - 24px)' }">
+                                <a-date-picker #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_begin"></a-date-picker>
+                            </a-form-item>
+                        </a-form-item>
+      #elseif(${field.view.queryType} == "LE")
+
+                        <a-form-item label="${field.label}">
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">≤</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(100% - 24px)' }">
+                                <a-date-picker #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_end"></a-date-picker>
+                            </a-form-item>
+                        </a-form-item>
+      #elseif(${field.view.queryType} == "BETWEEN")
+
+                        <a-form-item label="${field.label}">
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                                <a-date-picker #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                   v-model="queryParam.${field.classname}_begin"></a-date-picker>
+                            </a-form-item>
+                            <span :style="{ display: 'inline-block', width: '24px', textAlign: 'center' }">-</span>
+                            <a-form-item :style="{ display: 'inline-block', width: 'calc(50% - 12px)' }">
+                                <a-date-picker #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}_end"></a-date-picker>
+                            </a-form-item>
+                        </a-form-item>
+      #else
+
+                        <a-form-item label="${field.label}">
+                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
+                                    v-model="queryParam.${field.classname}"></a-input>
+                        </a-form-item>
+      #end
+    #else
+
+                        <a-form-item label="${field.label}">
+                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="queryParam.${field.classname}"></a-input>
+                        </a-form-item>
+    #end
+#elseif(${field.inputType} == "select")
+
+                        <a-form-item label="${field.label}">
+                            <a-select #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end :options="getOptions('${field.dictName}')" v-model="queryParam.${field.classname}"">
+                            </a-select>
+                        </a-form-item>
+#elseif(${field.inputType} == "checkbox")
+
+                        <a-form-item label="${field.label}">
+                            <a-checkbox-group #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end :options="getOptions('${field.dictName}')" v-model="queryParam.${field.classname}"">
+                            </a-checkbox-group>
+                        </a-form-item>
+#elseif(${field.inputType} == "radiobox")
+
+                        <a-form-item label="${field.label}">
+                            <a-radio-group #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end :options="getOptions('${field.dictName}')" v-model="queryParam.${field.classname}"">
+                            </a-radio-group>
+                        </a-form-item>
+#end
+                    </a-col>

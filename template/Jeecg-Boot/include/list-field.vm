@@ -1,0 +1,27 @@
+#if(${field.inputType} == "select" || ${field.inputType} == "checkbox" || ${field.inputType} == "radiobox")
+
+                    {
+                      title: '${field.label}',
+                      align: "center",
+                      dataIndex: '${field.classname}',
+                      customRender: (text) => {
+                        return filterDictText('${field.dictName}', text);
+                      }
+                    },
+#else
+  #if(${field.javaType} == "int" || ${field.javaType} == "BigDecimal")
+
+                    {
+                      title: '${field.label}',
+                      align: "right",
+                      dataIndex: '${field.classname}'
+                    },
+  #else
+
+                    {
+                      title: '${field.label}',
+                      align: "left",
+                      dataIndex: '${field.classname}'
+                    },
+  #end
+#end

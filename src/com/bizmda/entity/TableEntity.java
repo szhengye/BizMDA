@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.bizmda.utils.MdaException;
+import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 
 import com.bizmda.utils.Constant;
@@ -14,7 +15,7 @@ import com.bizmda.utils.GenUtils;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
+@Data
 @ToString
 public class TableEntity {
 	//表的名称
@@ -22,6 +23,7 @@ public class TableEntity {
 	//表的备注
 	private String label;
 	private String module;
+	private String modulePath;
 	private String primaryKey;
 	private String primaryKeyType;
 	private boolean hasStatus;
@@ -43,7 +45,7 @@ public class TableEntity {
 		this.className = GenUtils.camelName(this.name);
 //		this.classname = StringUtils.uncapitalize(this.className);
 		this.label = (String)map.get("label");
-		this.module = (String)map.get("module");
+//		this.module = (String)map.get("module");
 		this.primaryKey = (String)map.get("primaryKey");
 		this.primaryKeyType = (String)map.get("primaryKeyType");
 		if (this.primaryKeyType == null) 
@@ -87,6 +89,7 @@ public class TableEntity {
 		map.put("name", this.name);
 		map.put("label", this.label);
 		map.put("module",this.module);
+		map.put("modulePath",this.modulePath);
 		map.put("primaryKey", this.primaryKey);
 		map.put("primaryKeyType", this.primaryKeyType);
 		map.put("hasStatus", this.hasStatus);

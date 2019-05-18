@@ -13,12 +13,15 @@ public class GenUtils {
         File dir = new File(strPath);
         File[] files = dir.listFiles(); // 该文件目录下文件全部放入数组
         if (files != null) {
-            for (int i = 0; i < files.length; i++) {
-                String fileName = files[i].getName();
-                if (fileName.endsWith("yml")) { // 判断文件名是否以.yml结尾
-                    String strFileName = files[i].getAbsolutePath();
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    filelist.addAll(getFileList(file.getAbsolutePath()));
+                }
+                String fileName = file.getName();
+                if (fileName.toLowerCase().endsWith(".yml")) { // 判断文件名是否以.yml结尾
+//                    String strFileName = file.getAbsolutePath();
 //                    System.out.println("---" + strFileName);
-                    filelist.add(files[i]);
+                    filelist.add(file);
                 } else {
                     continue;
                 }

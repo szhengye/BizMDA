@@ -1,9 +1,7 @@
 #标签
-label: 客户
-#所属模块
-module: crm
+label: 联系人
 #主键
-primaryKey: cust_no
+primaryKey: link_no
 #主键生成规则（MANUAL-手工输入(缺省) UUID-UUID AUTO_INCREMENT-自增）
 primaryKeyType: UUID
 #是否物理删除,会自动生成mda_status域（0正常 1删除 2停用）
@@ -13,10 +11,10 @@ hasCreateUpdate: false
 #域列表
 fields:
    #域名
- - name: cust_no
+ - name: link_no
    #域标签
-   label: 客户编号
-   #数据类型：int,float,decimal(19,2)-money,date,datetime,tinyint-boolean,varchar(100),char(10),blob
+   label: 联系人编号
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
    type: char(32)
    #输入类型：text,textarea,checkbox,radiobox,select
    inputType: text
@@ -24,34 +22,48 @@ fields:
    dictName:
    #允许为空
    isNull: false
- - name: cust_name
-   label: 客户名称
+ - name: link_cust_no
+   #域标签
+   label: 客户编号
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: char(32)
+   #输入类型：text,input,textarea,checkbox,radiobox,select
+   inputType: text
+   #相关字典名
+   dictName:
+   #允许为空
+   isNull: false
+   primaryKeyTableName: customer
+ - name: link_name
+   label: 联系人名称
    type: varchar(20)
    inputType: text
    isNull: false
- - name: cust_region
+ - name: link_sex
    #域标签
-   label: 所在地区
-   #数据类型：int,float,decimal(19,2)-money,date,datetime,tinyint-boolean,varchar(100),char(10),blob
-   type: varchar(5)
+   label: 性别
+   #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
+   type: char(1)
    #输入类型：text,textarea,checkbox,radiobox,select
    inputType: select
    #相关字典名
-   dictName: region
+   dictName: sex
    #允许为空
-   isNull: true
- - name: cust_address
+   isNull: false
+ - name: link_position
    #域标签
-   label: 地址
+   label: 职位
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
-   type: varchar(100)
+   type: varchar(20)
    #输入类型：text,textarea,checkbox,radiobox,select
    inputType: text
- - name: cust_registered_capital
+   #允许为空
+   isNull: true
+ - name: link_age
    #域标签
-   label: 注册资金
+   label: 年龄
    #数据类型：int,float,decimal(19,2)-money,timestamp,tinyint-boolean,varchar(100),char(10),blob
-   type: decimal(19,2)
+   type: int
    #输入类型：text,textarea,checkbox,radiobox,select
    inputType: text
    #允许为空
