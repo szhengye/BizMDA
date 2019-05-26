@@ -1,0 +1,87 @@
+        #if(${action.type} == "OPEN-VIEW")
+
+        clickButton${mda_count}() {
+            var that = this;
+            #if(${action.params.confirm})
+
+            this.$confirm({
+                title: '确认${action.label}?',
+            onOk() {
+            #end
+          #if(${action.params.query})
+
+              let query = ${action.params.query};
+              that.${usd}router.push({path:'${action.params.view}',query:query});
+          #else
+
+              that.${usd}router.push({path:'${action.params.view}'});
+          #end
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
+        },
+        #elseif(${action.type} == "DO-SERVICE")
+
+        clickButton${mda_count}() {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
+
+            let data = #if(${action.params.data})${action.params.data}#else {}#end;
+            ${action.params.method}Action("${action.params.url}", data).then((res) => {
+                if (res.success) {
+                    that.${usd}message.success(res.message);
+                    this.loadData();
+                } else {
+                    that.${usd}message.warning(res.message);
+                }
+            });
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
+        },
+        #elseif(${action.type} == "ADD-WITH-MODAL")
+
+        clickButton${mda_count}() {
+            this.handleAdd();
+        },
+        #elseif(${action.type} == "BATCH-DELETE")
+
+        clickButton${mda_count}() {
+            this.batchDel();
+        },
+        #elseif(${action.type} == "EXPORT-EXCEL")
+
+        clickButton${mda_count}() {
+            let paramsStr = encodeURI(JSON.stringify(this.getQueryParams()));
+            let url = `${usd}{window._CONFIG['domianURL']}/${list_component.table.module}/${list_component.table.classname}/exportXls?paramsStr=${paramsStr}`;
+            window.location.href = url;
+        },
+        #elseif(${action.type} == "IMPORT-EXCEL")
+
+        clickButton${mda_count}(info){
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                this.$message.success("${info.file.name} 文件上传成功");
+                this.loadData();
+            } else if (info.file.status === 'error') {
+                this.$message.error("${info.file.name} 文件上传失败.");
+            }
+        },
+        #end

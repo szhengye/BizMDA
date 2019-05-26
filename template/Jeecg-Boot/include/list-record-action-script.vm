@@ -1,0 +1,81 @@
+        #if(${action.type} == "LIST-OPEN-VIEW")
+
+        clickButton${mda_count}(record) {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
+          #if(${action.params.query})
+
+              let query = ${action.params.query};
+              that.${usd}router.push({path:'${action.params.view}',query:query});
+          #else
+
+              that.${usd}router.push({path:'${action.params.view}'});
+          #end
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
+        },
+        #elseif(${action.type} == "LIST-DO-SERVICE")
+
+        clickButton${mda_count}(record) {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: '确认${action.label}?',
+          onOk() {
+          #end
+            let data = #if(${action.params.data})${action.params.data}#else {}#end;
+            ${action.params.method}Action("${action.params.url}", data).then((res) => {
+                if (res.success) {
+                    that.${usd}message.success(res.message);
+                    that.loadData();
+                } else {
+                    that.${usd}message.warning(res.message);
+                }
+            });
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
+        },
+        #elseif(${action.type} == "LIST-EDIT-WITH-MODAL")
+
+        clickButton${mda_count}(record) {
+            this.handleEdit(record);
+        },
+        #elseif(${action.type} == "LIST-DELETE")
+
+        clickButton${mda_count}(record) {
+            var that = this;
+          #if(${action.params.confirm})
+
+          this.$confirm({
+              title: #if(${action.label})'确认${action.label}?'#else'确认删除?'#end,
+          onOk() {
+          #end
+              this.handleDelete(record.${list_component.table.primaryKeyField.classname});
+          #if(${action.params.confirm})
+
+          },
+              onCancel() {
+              },
+          });
+          #end
+
+        },
+        #end

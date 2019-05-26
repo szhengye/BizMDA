@@ -112,26 +112,42 @@
           #end
 
         </a-tabs>
+#foreach($field in $section_component.fields)
+#if(${field.view.lookupView})
+        <${field.className}LookupModal ref="${field.className}Lookup" ></${field.className}LookupModal>
+#end
+#end
+
     </a-card>
 </template>
 
 <script>
     import { getAction } from '@/api/manage'
-    import {getOptions,filterDictText,initDictOptions} from '@/config/MdaDictionary.js'
+    import {filterDictText,dicts} from '@/config/MdaDictionary.js'
     //import {filterDictText} from '@/components/dict/JDictSelectUtil'
     // import pick from 'lodash.pick'
     // import moment from "moment"
+#foreach($field in $section_component.fields)
+#if(${field.view.lookupView})
+    import ${field.className}LookupModal from '@/views${field.view.lookupView}'
+#end
+#end
 
     export default {
+        components: {
+          #foreach($field in $section_component.fields)
+            #if(${field.view.lookupView})
+            ${field.className}LookupModal,
+            #end
+          #end
+
+        },
         data () {
             return {
                 title:"操作",
                 visible: false,
+                selectOptions: {},
                 model: {},
-#foreach($dict in $dicts)
-
-                ${dict.name}Options: [],
-#end
 #foreach ($component in $components)
 #if(${component.type} == "DETAIL")
 
@@ -165,20 +181,7 @@
             }
         },
         created () {
-#foreach($dict in $dicts)
-#if(${dict.dictItems})
-
-            this.${dict.name}Options = getOptions('${dict.name}');
-#else
-
-            initDictOptions('${dict.name}').then((res) => {
-                if (res.success) {
-                    this.${dict.name}Options = res.result;
-                }
-            });
-#end
-#end
-
+            this.selectOptions = dicts;
             this.loadData();
         },
         methods: {
@@ -381,6 +384,23 @@
   #end
 #end
 
+#foreach($field in $section_component.fields)
+  #if(${field.view.lookupView})
+
+		    open${field.className}Lookup() {
+		#if(${field.view.lookupParams})
+
+            let params = ${field.view.lookupParams};
+      #else
+
+            let params = {};
+    #end
+
+            this.$refs.${field.className}Lookup.title = "选择";
+  			    this.$refs.${field.className}Lookup.lookup(params);
+		    },
+  #end
+#end
         }
     }
 </script>

@@ -1,0 +1,21 @@
+  #if(${action.type} == "OPEN-VIEW")
+
+            <a-button @click="clickButton${mda_count}" type="primary" #if(${action.icon})icon="${action.icon}"#end>${action.label}</a-button>
+  #elseif(${action.type} == "DO-SERVICE")
+
+            <a-button @click="clickButton${mda_count}" type="primary" #if(${action.icon})icon="${action.icon}"#end>${action.label}</a-button>
+  #elseif(${action.type} == "ADD-WITH-MODAL")
+
+            <a-button @click="clickButton${mda_count}" type="primary" #if(${action.icon})icon="${action.icon}"#else icon="plus"#end>#if(${action.label}) ${action.label}#else 新增#end</a-button>
+  #elseif(${action.type} == "BATCH-DELETE")
+
+            <a-button v-if="selectedRowKeys.length > 0" @click="clickButton${mda_count}" type="primary" #if(${action.icon})icon="${action.icon}"#else icon="delete"#end>#if(${action.label}) ${action.label}#else 批量删除#end</a-button>
+  #elseif(${action.type} == "EXPORT-EXCEL")
+
+            <a-button @click="clickButton${mda_count}" type="primary" #if(${action.icon})icon="${action.icon}"#else icon="download"#end>#if(${action.label}) ${action.label}#else 导出#end</a-button>
+  #elseif(${action.type} == "IMPORT-EXCEL")
+
+            <a-upload name="file" :showUploadList="false" :multiple="false" :action="importExcelUrl" @change="clickButton${mda_count}">
+                <a-button type="primary" #if(${action.icon})icon="${action.icon}"#else icon="import"#end>#if(${action.label}) ${action.label}#else 导入#end</a-button>
+            </a-upload>
+  #end

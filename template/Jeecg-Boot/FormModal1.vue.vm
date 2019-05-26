@@ -43,13 +43,8 @@
                         :wrapperCol="{span: $wrapperCol}"
                         label="${field.label}"
                         hasFeedback >
-#if(${field.inputType} == "select")
-                        <a-select v-decorator="['${field.classname}', {}]" #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end>
-                            <a-select-option v-for="d in selectOptions['${field.dictName}']" :key="d.value">{{d.text}}</a-select-option>
-                        </a-select>
-#else
-                        <a-input #if(${field.view.placeholder}) placeholder="${field.view.placeholder}"#end v-decorator="['${field.classname}', {}]" />
-#end
+#parse("include/form-field.vm")
+
                     </a-form-item>
                   </a-col>
   #if(${field.view.newLine})
@@ -74,14 +69,12 @@
     #end
                                 </a-row>
 
-                                <a-row type="flex" style="margin-bottom:10px" :gutter="16" v-for="(item, index) in ${modal_component.classname}Model.${component.classname}List" :key="index">
+                                <a-row type="flex" style="margin-bottom:10px" :gutter="16" v-for="(record, index) in model.${component.classname}List" :key="index">
   #foreach($field in $component.fields)
                                     <a-col :span="#if(${field.view.span})${field.view.span}#else
 5#end">
                                         <a-form-item>
-                                            <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end
-
-                                                     v-decorator="['${component.classname}List['+index+'].${field.classname}', {'initialValue':item.${field.classname},rules: [{ required:#if(${field.null}) false#else true#end, message: '请输入${field.label}!' }]}]" />
+#parse("include/list-edit-field.vm")
                                         </a-form-item>
                                     </a-col>
   #end
@@ -115,7 +108,7 @@
     import JDate from '@/components/jeecg/JDate'
     import pick from 'lodash.pick'
     import moment from "moment"
-    import {dicts} from '@/config/MdaDictionary.js'
+    import {filterDictText,dicts} from '@/config/MdaDictionary.js'
 
     export default {
         name: "${className}Modal",
@@ -127,7 +120,7 @@
                 title:"操作",
                 visible: false,
                 selectOptions: {},
-                ${modal_component.classname}Model: {
+                model: {
 #foreach ($component in $components)
 #if(${component.type} == "MODAL-DETAIL")
                     ${component.classname}List: [{}],
@@ -165,24 +158,24 @@
             },
             edit (record) {
                 this.form.resetFields();
-                this.${modal_component.classname}Model = Object.assign({}, record);
+                this.model = Object.assign({}, record);
 #foreach ($component in $components)
   #if(${component.type} == "MODAL-DETAIL")
-                this.${modal_component.classname}Model.${component.classname}List = [{}];
+                this.model.${component.classname}List = [{}];
   #end
 #end
 
                 //--------------------------------------------------------
                 //初始化明细表数据
-                console.log(this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname})
-                if(this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}){
-                    let params = {id:this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}}
+                console.log(this.model.${modal_component.primaryKeyField.classname})
+                if(this.model.${modal_component.primaryKeyField.classname}){
+                    let params = {id:this.model.${modal_component.primaryKeyField.classname}}
 #foreach ($component in $components)
 #if(${component.type} == "MODAL-DETAIL")
                     //初始化${component.label}列表
                     getAction(this.url.${component.classname}List,params).then((res)=>{
                         if (res.success) {
-                            this.${modal_component.classname}Model.${component.classname}List = res.result;
+                            this.model.${component.classname}List = res.result;
                             this.$forceUpdate()
                        }
                    })
@@ -190,29 +183,7 @@
 #end
 
                 }
-                //--------------------------------------------------------
                 this.visible = true;
-                this.$nextTick(() => {
-            #foreach($field in $modal_component.fields)
-              #if(${field.type} == "datetime")
-
-                  this.form.setFieldsValue({${field.classname}:
-                  this.${modal_component.classname}Model.${field.classname}? moment(this.${modal_component.classname}Model.${field.classname}, 'YYYY-MM-DD HH:mm:ss') : null
-              })
-              #elseif(${field.type} == "date")
-
-                  this.form.setFieldsValue({${field.classname}:
-                  this.${modal_component.classname}Model.${field.classname}? moment(this.${modal_component.classname}Model.${field.classname}) : null
-              })
-              #else
-
-                  this.form.setFieldsValue({${field.classname}:
-                  this.${modal_component.classname}Model.${field.classname}})
-              #end
-            #end
-
-                });
-                console.log(this.${modal_component.classname}Model)
             },
             close () {
                 this.$emit('close');
@@ -226,14 +197,14 @@
                         that.confirmLoading = true;
                         let httpurl = '';
                         let method = '';
-                        if(!this.${modal_component.classname}Model.${modal_component.primaryKeyField.classname}){
+                        if(!this.model.${modal_component.primaryKeyField.classname}){
                             httpurl+=this.url.add;
                             method = 'post';
                         }else{
                             httpurl+=this.url.edit;
                             method = 'put';
                         }
-                        let ${modal_component.classname}Data = Object.assign(this.${modal_component.classname}Model, values);
+                        let ${modal_component.classname}Data = Object.assign(this.model, values);
 
 #foreach($field in $modal_component.fields)
   #if(${field.type} == "datetime")
@@ -268,12 +239,12 @@
 #foreach ($component in $components)
 #if(${component.type} == "MODAL-DETAIL")
             addRow${component.className} () {
-                this.${modal_component.classname}Model.${component.classname}List.push({});
+                this.model.${component.classname}List.push({});
                 this.$forceUpdate();
             },
             delRow${component.className} (index) {
                 console.log(index)
-                this.${modal_component.classname}Model.${component.classname}List.splice(index,1);
+                this.model.${component.classname}List.splice(index,1);
                 this.$forceUpdate();
             },
   #end

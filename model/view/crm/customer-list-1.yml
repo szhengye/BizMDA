@@ -1,7 +1,7 @@
 #标签
 label: 客户列表
 #视图展现模块
-model: VIEW-QUERY-LIST-1
+model: LIST-1
 #查询条件域列表
 components:
   #视图类型：查询条件组件
@@ -37,45 +37,52 @@ components:
     tableName: customer
     #视图扩展属性
     view:
+      modalView: /crm/CustomerFormModal1
     fields:
       #域名
       - name: cust_no
-      #视图扩展属性
-        view:
-        #提示信息
-          placeholder: 输入客户编号
       - name: cust_name
-        view:
-          #提示信息
-          placeholder: 输入客户名称
       - name: cust_region
       - name: cust_address
       - name: cust_registered_capital
+    #按钮动作
     actions:
-    #视图类型：弹出编辑modal窗口组件
-  - type: MODAL
-    #相关数据表
-    tableName: customer
-    #视图扩展属性
-    view:
-      width: 1200
-    fields:
-      #域名
-      - name: cust_no
-        view:
-          span: 12
-      - name: cust_name
-        view:
-          span: 24
-      - name: cust_region
-        view:
-          span: 12
-          newLine: true
-      - name: cust_address
-        view:
-          span: 12
-      - name: cust_registered_capital
-        view:
-          span: 8
-    actions:
-
+      #动作类型
+      - type: LIST-OPEN-VIEW
+        label: 查看
+        icon: read
+        params:
+          view: /crm/CustomerForm1
+          query: "{mda_id: record.custNo}"
+      - type: LIST-DO-SERVICE
+        label: 删除服务
+        icon: delete
+        params:
+          method: delete
+          url: /crm/customer/delete
+          data: "{id: record.custNo}"
+          confirm: true
+      - type: LIST-DELETE
+        label: 删除
+        icon: delete
+      - type: LIST-EDIT-WITH-MODAL
+      - type: ADD-WITH-MODAL
+      - type: BATCH-DELETE
+      - type: OPEN-VIEW
+        label: 打开视图
+        icon: folder-open"
+        params:
+          view: /crm/CustomerForm1
+          confirm: true
+      - type: DO-SERVICE
+        label: 执行服务
+        icon: interation
+        params:
+          method: delete
+          url: /crm/customer/delete
+      - type: EXPORT-EXCEL
+        label: 导出
+        icon: download
+      - type: IMPORT-EXCEL
+        label: 导入
+        icon: import

@@ -1,0 +1,88 @@
+#if(${field.inputType} == "text")
+  #if(${field.javaType} == "int" || ${field.javaType} == "BigDecimal")
+    #if(${field.view.showType} == "text")
+
+                        {{record.${field.classname}}}
+    #elseif(${field.view.showType} == "disabled")
+
+                        <a-input-number disabled v-model="record.${field.classname}" />
+    #else
+
+                        <a-input-number #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" />
+    #end
+  #elseif(${field.javaType} == "Date")
+    #if(${field.view.showType} == "text")
+
+                        {{record.${field.classname}}}
+    #elseif(${field.view.showType} == "disabled")
+
+                        <a-date-picker disabled v-model="record.${field.classname}" />
+    #else
+
+                        <a-date-picker #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" />
+    #end
+  #else
+    #if(${field.view.showType} == "text")
+
+                        {{record.${field.classname}}}
+    #elseif(${field.view.showType} == "disabled")
+
+                        <a-input disabled v-model="record.${field.classname}" />
+    #else
+
+                        <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" />
+    #end
+  #end
+#elseif(${field.inputType} == "textarea")
+  #if(${field.view.showType} == "text")
+
+                        {{record.${field.classname}}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-input disabled autosize v-model="record.${field.classname}" />
+  #else
+
+                        <a-input #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end autosize v-model="record.${field.classname}" />
+  #end
+#elseif(${field.inputType} == "select")
+  #if(${field.view.showType} == "text")
+
+                        {{filterDictText('${field.dictName}',record.${field.classname})}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-select disabled #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-select>
+  #else
+
+                        <a-select #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-select>
+  #end
+#elseif(${field.inputType} == "checkbox")
+  #if(${field.view.showType} == "text")
+
+                        {{filterDictText('${field.dictName}',record.${field.classname})}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-checkbox-group disabled #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-checkbox-group>
+  #else
+
+                        <a-checkbox-group #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-checkbox-group>
+  #end
+#elseif(${field.inputType} == "radiobox")
+  #if(${field.view.showType} == "text")
+
+                        {{filterDictText('${field.dictName}',record.${field.classname})}}
+  #elseif(${field.view.showType} == "disabled")
+
+                        <a-radio-group disabled #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-radio-group>
+  #else
+
+                        <a-radio-group #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="record.${field.classname}" :options="selectOptions['${field.dictName}']">
+                        </a-radio-group>
+  #end
+#else
+                        {{record.${field.classname}}}
+#end

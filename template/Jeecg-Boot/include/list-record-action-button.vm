@@ -1,0 +1,28 @@
+            #if(${action.type} == "LIST-OPEN-VIEW")
+
+                #if($_flag)<a-divider type="vertical"/>#else #set($_flag=true) #end
+
+                <a @click="clickButton${mda_count}(record)">${action.label}</a>
+            #elseif(${action.type} == "LIST-DO-SERVICE")
+
+                #if($_flag)<a-divider type="vertical"/>#else #set($_flag=true) #end
+
+                <a @click="clickButton${mda_count}(record)">${action.label}</a>
+            #elseif(${action.type} == "LIST-EDIT-WITH-MODAL")
+
+                #if($_flag)<a-divider type="vertical"/>#else #set($_flag=true) #end
+
+                <a @click="clickButton${mda_count}(record)">#if(${action.label})${action.label}#else 编辑#end</a>
+            #elseif(${action.type} == "LIST-DELETE")
+
+                #if($_flag)<a-divider type="vertical"/>#else #set($_flag=true) #end
+                #if(${action.params.confirm})
+
+                <a-popconfirm title="确定删除吗?" @confirm="() => clickButton${mda_count}(record)">
+                  <a>#if(${action.label})${action.label}#else 删除#end</a>
+                </a-popconfirm>
+                #else
+
+                <a @click="clickButton${mda_count}(record)">#if(${action.label})${action.label}#else 删除#end</a>
+                #end
+            #end

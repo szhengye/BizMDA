@@ -1,15 +1,16 @@
 #标签
 label: 客户列表
 #视图展现模块
-model: VIEW-FORM-1
-#相关数据表
-tableName: customer
+model: FORM-MODAL-1
 #查询条件域列表
 components:
-    #视图类型：FORM表单组件
-  - type: SECTION
+  #视图类型：查询条件组件
+  - type: MODAL-MASTER
+    #相关数据表
+    tableName: customer
     #视图扩展属性
     view:
+      width: 1200
     fields:
       #域名
       - name: cust_no
@@ -29,8 +30,8 @@ components:
         view:
           span: 8
     actions:
-    #视图类型：明细表组件
-  - type: DETAIL
+    #视图类型：弹出编辑modal窗口明细表组件
+  - type: MODAL-DETAIL
     #相关数据表
     tableName: cust_linkman
     #视图扩展属性
@@ -50,3 +51,4 @@ components:
         view:
           span: 3
     actions:
+
