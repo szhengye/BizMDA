@@ -4,10 +4,10 @@
                         {{model.${field.classname}_label}}
   #elseif(${field.view.showType} == "disabled")
 
-                          <a-input-search #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end @search="onSearch" disabled enterButton/>
+                          <a-input-search #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="lookup.${field.classname}" @search="onSearch" disabled enterButton/>
   #else
 
-                          <a-input-search #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end @search="open${field.className}Lookup" enterButton/>
+                          <a-input-search #if(${field.view.placeholder})placeholder="${field.view.placeholder}"#end v-model="lookup.${field.classname}" @search="open${field.className}Lookup" enterButton/>
   #end
 #else
 #if(${field.inputType} == "text")

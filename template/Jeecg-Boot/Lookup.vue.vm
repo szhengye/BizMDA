@@ -75,6 +75,7 @@
     import { MdaLookupMixin } from '@/utils/MdaLookupMixin'
     import {filterDictText} from '@/config/MdaDictionary.js'
     import {dicts} from '@/config/MdaDictionary.js'
+    import {getAction } from '@/api/manage'
 
     export default {
         name: "${className}",
@@ -86,6 +87,8 @@
                 visible: false,
                 confirmLoading: false,
                 description: '${label}',
+                form:  null,
+                fieldName: '',
                 //字典数组缓存
                 //selectOptions: {},
                 // 表头
@@ -113,9 +116,58 @@
         created () {
         },
         methods: {
-            lookup (params) {
+            lookup (params,key) {
                 this.loadData(params);
+                this.selectedRowKeys = [key];
                 this.visible = true;
+            },
+            setDesc(form,id,fieldName) {
+                this.form = form;
+                this.fieldName = fieldName;
+                var that = this;
+                getAction("/${list_component.table.modulePath}/${list_component.table.classname}/queryById", {
+                    id: id
+                }).then((res) => {
+                    if (res.success) {
+#if(${list_component.view.lookupFieldDesc})
+                        let record = res.result;
+                        let desc = ${list_component.view.lookupFieldDesc};
+                        that.form.lookup[fieldName] = desc;
+                        that.selectedRowKeys = [id];
+                        that.selectionRows = [res.result];
+#else
+                        that.form.lookup[fieldName] = id;
+                        that.selectedRowKeys = [id];
+                        that.selectionRows = [res.result];
+#end
+
+                        that.form.$forceUpdate();
+                    }
+                })
+            },
+            close () {
+                this.$emit('close');
+                this.visible = false;
+            },
+            handleOk() {
+                if (this.selectedRowKeys.length <= 0) {
+                    this.$message.warning('请选择一条记录！');
+                    return;
+                }
+                let key = this.selectedRowKeys[0];
+                let record = this.selectionRows[0];
+                this.form.model[this.fieldName] = key;
+#if(${list_component.view.lookupFieldDesc})
+                let desc = ${list_component.view.lookupFieldDesc};
+                this.form.lookup[this.fieldName] = desc;
+#else
+                this.form.lookup[this.fieldName] = key;
+#end
+                this.form.$forceUpdate();
+                this.close();
+            },
+            handleCancel() {
+                this.close();
             },
         }
     }

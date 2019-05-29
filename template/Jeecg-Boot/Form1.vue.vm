@@ -137,6 +137,7 @@
         components: {
           #foreach($field in $section_component.fields)
             #if(${field.view.lookupView})
+
             ${field.className}LookupModal,
             #end
           #end
@@ -148,6 +149,7 @@
                 visible: false,
                 selectOptions: {},
                 model: {},
+                lookup: {},
 #foreach ($component in $components)
 #if(${component.type} == "DETAIL")
 
@@ -199,6 +201,12 @@
                     getAction("/${module}/${table.classname}/queryById", {id:id}).then((res) => {
                         if (res.success) {
                             this.model = res.result;
+#foreach($field in $section_component.fields)
+#if(${field.view.lookupView})
+                            this.$refs.${field.className}Lookup.setDesc(this,this.model.${field.classname},"${field.classname}");
+#end
+#end
+
                             this.initFieldsValue();
 #foreach ($component in $components)
   #if(${component.type} == "DETAIL")
@@ -235,6 +243,7 @@
   ##   #end
   ## #end
   ##               });
+
             },
 
 
@@ -397,7 +406,7 @@
     #end
 
             this.$refs.${field.className}Lookup.title = "选择";
-  			    this.$refs.${field.className}Lookup.lookup(params);
+  			    this.$refs.${field.className}Lookup.lookup(params,this.model.${field.classname});
 		    },
   #end
 #end

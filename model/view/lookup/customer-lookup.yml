@@ -38,6 +38,7 @@ components:
     #视图扩展属性
     view:
       width: 1200
+      lookupFieldDesc: record.custName
     fields:
       #域名
       - name: cust_no
