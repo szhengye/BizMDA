@@ -16,7 +16,7 @@
 <template>
     <a-modal
             :title="title"
-            :width="#if(${list_component.view.width})${list_component.view.width}#else 800#end"
+            :width="#if(${view.width})${view.width}#else 800#end"
             :visible="visible"
             :confirmLoading="confirmLoading"
             @ok="handleOk"
@@ -129,9 +129,9 @@
                     id: id
                 }).then((res) => {
                     if (res.success) {
-#if(${list_component.view.lookupFieldDesc})
+#if(${view.lookupFieldDesc})
                         let record = res.result;
-                        let desc = ${list_component.view.lookupFieldDesc};
+                        let desc = ${view.lookupFieldDesc};
                         that.form.lookup[fieldName] = desc;
                         that.selectedRowKeys = [id];
                         that.selectionRows = [res.result];
@@ -157,8 +157,8 @@
                 let key = this.selectedRowKeys[0];
                 let record = this.selectionRows[0];
                 this.form.model[this.fieldName] = key;
-#if(${list_component.view.lookupFieldDesc})
-                let desc = ${list_component.view.lookupFieldDesc};
+#if(${view.lookupFieldDesc})
+                let desc = ${view.lookupFieldDesc};
                 this.form.lookup[this.fieldName] = desc;
 #else
                 this.form.lookup[this.fieldName] = key;

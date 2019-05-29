@@ -2,6 +2,10 @@
 label: 客户列表
 #视图展现模块
 model: LOOKUP
+#视图扩展属性
+view:
+  width: 1200
+  lookupFieldDesc: record.custName
 #查询条件域列表
 components:
   #视图类型：查询条件组件
@@ -37,8 +41,6 @@ components:
     tableName: customer
     #视图扩展属性
     view:
-      width: 1200
-      lookupFieldDesc: record.custName
     fields:
       #域名
       - name: cust_no

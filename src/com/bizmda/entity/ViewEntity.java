@@ -41,6 +41,7 @@ public class ViewEntity {
         this.classname = StringUtils.uncapitalize(this.className);
         this.model = (String)map.get("model");
         this.label = (String)map.get("label");
+        this.view = (Map)map.get("view");
 //        this.module = (String)map.get("module");
         this.tableName = (String)map.get("tableName");
         if (tableName != null) {
@@ -133,6 +134,7 @@ public class ViewEntity {
         map.put("className", this.className);
         map.put("classname", this.classname);
         map.put("dicts",this.dicts);
+        map.put("view",this.view);
         return map;
     }
 }

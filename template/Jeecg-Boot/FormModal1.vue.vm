@@ -8,7 +8,7 @@
 <template>
     <a-modal
             :title="title"
-            :width="#if(${modal_component.view.width})${modal_component.view.width}#else
+            :width="#if(${view.width})${view.width}#else
 800#end"
             :visible="visible"
             :confirmLoading="confirmLoading"
