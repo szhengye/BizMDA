@@ -1,3 +1,4 @@
+                                        <a-form-item>
 #if(${field.inputType} == "text")
   #if(${field.javaType} == "int" || ${field.javaType} == "BigDecimal")
     #if(${field.view.showType} == "text")
@@ -86,3 +87,4 @@
 #else
                         {{record.${field.classname}}}
 #end
+                                        </a-form-item>

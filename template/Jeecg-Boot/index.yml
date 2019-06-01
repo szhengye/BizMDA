@@ -32,34 +32,6 @@ templates:
  - file: dictionary.js.vm
    model: dicts
    target: ${mda.resourcePath}/src/config/MdaDictionary.js
-#   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口）
-# - file: QueryList1.vue.vm
-#   model: VIEW-QUERY-LIST-1
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#   #同上，为弹出的modal页面
-# - file: QueryList1Modal.vue.vm
-#   model: VIEW-QUERY-LIST-1
-#   target: ${mda.resourcePath}/src/views/${modulePath}/modules/${className}Modal.vue
-#   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口，modal窗口含子表操作）
-# - file: QueryList2.vue.vm
-#   model: VIEW-QUERY-LIST-2
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#   #同上，为弹出的modal页面
-# - file: QueryList2Modal.vue.vm
-#   model: VIEW-QUERY-LIST-2
-#   target: ${mda.resourcePath}/src/views/${modulePath}/modules/${className}Modal.vue
-#   #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出）
-# - file: QueryList3.vue.vm
-#   model: VIEW-QUERY-LIST-3
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#   #数据编辑表单
-# - file: EditForm1.vue.vm
-#   model: EDIT-FORM-1
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#   #数据查阅表单（含明细子列表）
-# - file: ViewForm1.vue.vm
-#   model: VIEW-FORM-1
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
    #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出）
  - file: List1.vue.vm
    model: LIST-1
@@ -68,16 +40,12 @@ templates:
  - file: Form1.vue.vm
    model: FORM-1
    target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
+   #弹出数据表单新增/编辑的modal页面
+ - file: FormModal1.vue.vm
+   model: FORM-MODAL-1
+   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
    #Lookup列表VUE页面文件（带查询条件和分页）
  - file: Lookup.vue.vm
    model: LOOKUP
-   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#  #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出，新增和编辑操作为弹出modal窗口）
-# - file: ListWithFormModal.vue.vm
-#   model: LIST-WITH-FORM-MODAL
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-  #弹出数据表单新增/编辑的modal页面
- - file: FormModal1.vue.vm
-   model: FORM-MODAL-1
    target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
 

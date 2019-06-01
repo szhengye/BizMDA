@@ -1,0 +1,32 @@
+      #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+      #elseif(${action.type} == "OPEN-VIEW")
+
+            //子表单表单按钮方法
+            clickDetailButton${action_no}() {
+                let record = this.model;
+              #if(${action.params.query})
+
+                  let query = ${action.params.query};
+                  this.${usd}router.push({path:'${action.params.view}',query:query});
+              #else
+
+                  this.${usd}router.push({path:'${action.params.view}'});
+              #end
+
+            },
+      #elseif(${action.type} == "DO-SERVICE")
+
+            //子表单表单按钮方法
+            clickDetailButton${action_no}() {
+                let record = this.model;
+                let data = #if(${action.params.data})${action.params.data}#else {}#end;
+                ${action.params.method}Action("${action.params.url}", data).then((res) => {
+                    if (res.success) {
+                        this.${usd}message.success(res.message);
+                        this.load${component.table.className}List(this);
+                    } else {
+                        this.${usd}message.warning(res.message);
+                    }
+                });
+            },
+      #end

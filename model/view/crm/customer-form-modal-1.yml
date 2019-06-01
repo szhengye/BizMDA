@@ -8,7 +8,7 @@ view:
 #查询条件域列表
 components:
   #视图类型：查询条件组件
-  - type: MODAL-MASTER
+  - type: MASTER
     #相关数据表
     tableName: customer
     #视图扩展属性
@@ -33,7 +33,7 @@ components:
           span: 8
     actions:
     #视图类型：弹出编辑modal窗口明细表组件
-  - type: MODAL-DETAIL
+  - type: DETAIL
     #相关数据表
     tableName: cust_linkman
     #视图扩展属性

@@ -1,0 +1,7 @@
+  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+    #if($_flag)
+
+          <a-divider type="vertical"/>#else #set($_flag=true) #end
+
+          <a @click="clickDetailButton${action_no}(record)">${action.label}</a>
+  #end

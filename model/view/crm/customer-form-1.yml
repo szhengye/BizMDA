@@ -7,7 +7,7 @@ tableName: customer
 #查询条件域列表
 components:
     #视图类型：FORM表单组件
-  - type: SECTION
+  - type: MASTER
     #视图扩展属性
     view:
     fields:

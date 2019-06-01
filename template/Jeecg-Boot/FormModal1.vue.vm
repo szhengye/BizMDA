@@ -1,5 +1,5 @@
 #foreach ($component in $components)
-  #if(${component.type} == "MODAL-MASTER")
+  #if(${component.type} == "MASTER")
     #set($modal_component = $component)
     #break
   #end
@@ -58,7 +58,7 @@
                     <a-tabs defaultActiveKey="1" >
 #set($_mda_count = 0)
 #foreach ($component in $components)
-#if(${component.type} == "MODAL-DETAIL")
+#if(${component.type} == "DETAIL")
   #set($_mda_count = $_mda_count + 1)
                         <a-tab-pane tab="${component.label}" key="$_mda_count">
                             <div>
@@ -73,9 +73,7 @@
   #foreach($field in $component.fields)
                                     <a-col :span="#if(${field.view.span})${field.view.span}#else
 5#end">
-                                        <a-form-item>
 #parse("include/list-edit-field.vm")
-                                        </a-form-item>
                                     </a-col>
   #end
 
@@ -122,7 +120,7 @@
                 selectOptions: {},
                 model: {
 #foreach ($component in $components)
-#if(${component.type} == "MODAL-DETAIL")
+#if(${component.type} == "DETAIL")
                     ${component.classname}List: [{}],
 #end
 #end
@@ -136,7 +134,7 @@
                     add: "/${modal_component.table.module}/${modal_component.table.classname}/addMain",
                     edit: "/${modal_component.table.module}/${modal_component.table.classname}/editMain",
 #foreach ($component in $components)
-#if(${component.type} == "MODAL-DETAIL")
+#if(${component.type} == "DETAIL")
   #foreach($field in $component.table.fields)
     #if(${field.primaryKeyTableName})
 
@@ -160,7 +158,7 @@
                 this.form.resetFields();
                 this.model = Object.assign({}, record);
 #foreach ($component in $components)
-  #if(${component.type} == "MODAL-DETAIL")
+  #if(${component.type} == "DETAIL")
                 this.model.${component.classname}List = [{}];
   #end
 #end
@@ -171,7 +169,7 @@
                 if(this.model.${modal_component.primaryKeyField.classname}){
                     let params = {id:this.model.${modal_component.primaryKeyField.classname}}
 #foreach ($component in $components)
-#if(${component.type} == "MODAL-DETAIL")
+#if(${component.type} == "DETAIL")
                     //初始化${component.label}列表
                     getAction(this.url.${component.classname}List,params).then((res)=>{
                         if (res.success) {
@@ -237,7 +235,7 @@
                 this.close()
             },
 #foreach ($component in $components)
-#if(${component.type} == "MODAL-DETAIL")
+#if(${component.type} == "DETAIL")
             addRow${component.className} () {
                 this.model.${component.classname}List.push({});
                 this.$forceUpdate();

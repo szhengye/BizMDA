@@ -1,6 +1,6 @@
 #foreach ($component in $components)
-  #if(${component.type} == "SECTION")
-    #set($section_component = $component)
+  #if(${component.type} == "MASTER")
+    #set($master_component = $component)
     #break
   #end
 #end
@@ -9,7 +9,7 @@
     <a-card :body-style="{padding: '24px 32px'}" :bordered="false">
             <a-form :form="form">
                 <a-row :gutter="16">
-#foreach($field in $section_component.fields)
+#foreach($field in $master_component.fields)
 #if(${field.view.span} <= 6)
   #set($labelCol = 12)
   #set($wrapperCol = ${field.view.span} * 4 - 12)
@@ -49,25 +49,22 @@
             </a-form>
             <div class="table-operator" style="margin-top: 5px;text-align: center">
 #set($action_no = 0)
-#foreach($action in $section_component.actions)
-  #set($action_no = $action_no + 1)
-
-                <a-button type="primary" @click="clickButton${action_no}" #if(${action.icon})icon="${action.icon}"#end style="margin-left: 8px">${action.label}</a-button>
-  #if(${action.type} == "OPEN-VIEW")
-    #elseif(${action.type} == "DO-SERVICE")
-    #else
-  #end
+#foreach($action in $master_component.actions)
+#set($action_no = $action_no + 1)
+#parse("include/form-master-action-button.vm")
 #end
 
             </div>
 
         <!-- 子表单区域 -->
         <a-tabs defaultActiveKey="1" >
-          #set($_mda_count = 0)
+          #set($detail_no = 0)
+          #set($action_no = 0)
           #foreach ($component in $components)
             #if(${component.type} == "DETAIL")
-              #set($_mda_count = $_mda_count + 1)
-                <a-tab-pane tab="${component.label}" key="$_mda_count">
+              #set($detail_no = $detail_no + 1)
+
+                <a-tab-pane tab="${component.label}" key="$detail_no">
                     <a-table
                             ref="table-${component.table.name}"
                             size="middle"
@@ -80,14 +77,8 @@
         <span slot="action" slot-scope="text, record">
 #set($_flag=false)
 #foreach($action in $component.actions)
-  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
-    #set($action_no = $action_no + 1)
-    #if($_flag)
-
-          <a-divider type="vertical"/>#else #set($_flag=true) #end
-
-          <a @click="clickButton${action_no}(record)">${action.label}</a>
-  #end
+#set($action_no = $action_no + 1)
+#parse("include/form-detail-record-action-button.vm")
 #end
 
         </span>
@@ -98,12 +89,8 @@
                     <div class="table-operator" style="margin-top: 5px;text-align: center">
 #set($_flag=false)
 #foreach($action in $component.actions)
-  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
-  #else
-    #set($action_no = $action_no + 1)
-
-                        <a-button type="primary" @click="clickButton${action_no}" #if(${action.icon})icon="${action.icon}"#end style="margin-left: 8px">${action.label}</a-button>
-  #end
+#set($action_no = $action_no + 1)
+#parse("include/form-detail-action-button.vm")
 #end
 
                     </div>
@@ -112,7 +99,7 @@
           #end
 
         </a-tabs>
-#foreach($field in $section_component.fields)
+#foreach($field in $master_component.fields)
 #if(${field.view.lookupView})
         <${field.className}LookupModal ref="${field.className}Lookup" ></${field.className}LookupModal>
 #end
@@ -127,7 +114,7 @@
     //import {filterDictText} from '@/components/dict/JDictSelectUtil'
     // import pick from 'lodash.pick'
     // import moment from "moment"
-#foreach($field in $section_component.fields)
+#foreach($field in $master_component.fields)
 #if(${field.view.lookupView})
     import ${field.className}LookupModal from '@/views${field.view.lookupView}'
 #end
@@ -135,7 +122,7 @@
 
     export default {
         components: {
-          #foreach($field in $section_component.fields)
+          #foreach($field in $master_component.fields)
             #if(${field.view.lookupView})
 
             ${field.className}LookupModal,
@@ -201,7 +188,7 @@
                     getAction("/${module}/${table.classname}/queryById", {id:id}).then((res) => {
                         if (res.success) {
                             this.model = res.result;
-#foreach($field in $section_component.fields)
+#foreach($field in $master_component.fields)
 #if(${field.view.lookupView})
                             this.$refs.${field.className}Lookup.setDesc(this,this.model.${field.classname},"${field.classname}");
 #end
@@ -225,7 +212,7 @@
             initFieldsValue() {
                 this.model = Object.assign(this.model, this.$route.query);
   ##               this.$nextTick(() => {
-  ## #foreach($field in $section_component.fields)
+  ## #foreach($field in $master_component.fields)
   ##   #if(${field.type} == "datetime")
   ##
   ##                 this.form.setFieldsValue({${field.classname}:
@@ -252,10 +239,10 @@
             load${component.table.className}List(that) {
               //--------------------------------------------------------
               //初始化明细表数据
-              if (that.model.${section_component.primaryKeyField.classname}) {
-                let params = {id: this.model.${section_component.primaryKeyField.classname}}
+              if (that.model.${master_component.primaryKeyField.classname}) {
+                let params = {id: this.model.${master_component.primaryKeyField.classname}}
     #foreach($field in $component.table.fields)
-      #if(${field.primaryKeyTableName} == ${section_component.table.name})
+      #if(${field.primaryKeyTableName} == ${master_component.table.name})
 
                 //初始化${component.label}列表
                 getAction(
@@ -278,122 +265,27 @@
 #end
 
 
-      #set($action_no = 0)
-#foreach($action in $section_component.actions)
-  #set($action_no = $action_no + 1)
-  #if(${action.type} == "OPEN-VIEW")
-
-      //表单按钮方法
-      clickButton${action_no}() {
-          let record = this.model;
-        #if(${action.params.query})
-
-          let query = ${action.params.query};
-          this.${usd}router.push({path:'${action.params.view}',query:query});
-        #else
-
-          this.${usd}router.push({path:'${action.params.view}'});
-        #end
-
-      },
-  #elseif(${action.type} == "DO-SERVICE")
-
-      //表单按钮方法
-      clickButton${action_no}() {
-          let record = this.model;
-          let data = #if(${action.params.data})${action.params.data}#else {}#end;
-          ${action.params.method}Action("${action.params.url}", data).then((res) => {
-              if (res.success) {
-                  this.${usd}message.success(res.message);
-                  this.loadData();
-              } else {
-                  this.${usd}message.warning(res.message);
-              }
-          });
-      },
-  #else
-  #end
+#set($action_no = 0)
+#foreach($action in $master_component.actions)
+#set($action_no = $action_no + 1)
+#parse("include/form-master-action-script.vm")
 #end
 
+#set($action_no = 0)
 #foreach ($component in $components)
   #if(${component.type} == "DETAIL")
     #foreach($action in $component.actions)
-      #if(${action.type} == "LIST-OPEN-VIEW")
-        #set($action_no = $action_no + 1)
-
-          //子表单明细按钮方法
-          clickButton${action_no}(record) {
-            #if(${action.params.query})
-
-                let query = ${action.params.query};
-                this.${usd}router.push({path:'${action.params.view}',query:query});
-            #else
-
-                this.${usd}router.push({path:'${action.params.view}'});
-            #end
-
-          },
-
-      #elseif(${action.type} == "LIST-DO-SERVICE")
-        #set($action_no = $action_no + 1)
-
-          //子表单明细按钮方法
-          clickButton${action_no}(record) {
-              let data = #if(${action.params.data})${action.params.data}#else {}#end;
-              ${action.params.method}Action("${action.params.url}", data).then((res) => {
-                  if (res.success) {
-                      this.${usd}message.success(res.message);
-                      this.load${component.table.className}List(this);
-                  } else {
-                      this.${usd}message.warning(res.message);
-                  }
-              });
-
-          },
-      #else
-      #end
+      #set($action_no = $action_no + 1)
+      #parse("include/form-detail-record-action-script.vm")
     #end
     #foreach($action in $component.actions)
-      #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
-      #else
-        #set($action_no = $action_no + 1)
-        #if(${action.type} == "OPEN-VIEW")
-
-            //子表单表单按钮方法
-            clickButton${action_no}() {
-                let record = this.model;
-              #if(${action.params.query})
-
-                  let query = ${action.params.query};
-                  this.${usd}router.push({path:'${action.params.view}',query:query});
-              #else
-
-                  this.${usd}router.push({path:'${action.params.view}'});
-              #end
-
-            },
-        #elseif(${action.type} == "DO-SERVICE")
-
-            //子表单表单按钮方法
-            clickButton${action_no}() {
-                let record = this.model;
-                let data = #if(${action.params.data})${action.params.data}#else {}#end;
-                ${action.params.method}Action("${action.params.url}", data).then((res) => {
-                    if (res.success) {
-                        this.${usd}message.success(res.message);
-                        this.load${component.table.className}List(this);
-                    } else {
-                        this.${usd}message.warning(res.message);
-                    }
-                });
-            },
-        #end
-      #end
+      #set($action_no = $action_no + 1)
+      #parse("include/form-detail-action-script.vm")
     #end
   #end
 #end
 
-#foreach($field in $section_component.fields)
+#foreach($field in $master_component.fields)
   #if(${field.view.lookupView})
 
 		    open${field.className}Lookup() {

@@ -1,0 +1,5 @@
+  #if(${action.type} == "LIST-OPEN-VIEW" || ${action.type} == "LIST-DO-SERVICE")
+  #else
+
+                        <a-button type="primary" @click="clickDetailButton${action_no}" #if(${action.icon})icon="${action.icon}"#end style="margin-left: 8px">${action.label}</a-button>
+  #end
