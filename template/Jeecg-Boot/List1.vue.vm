@@ -109,7 +109,7 @@
                 description: '${label}',
                 //字典数组缓存
                 //selectOptions: {},
-                importExcelUrl:`${usd}{window._CONFIG['domianURL']}/${module}/${list_component.classname}/importExcel`,
+                importExcelUrl:`${usd}{window._CONFIG['domianURL']}/${table.modulePath}/${table.classname}/importExcel`,
                 // 表头
                 columns: [
                     {
@@ -133,9 +133,9 @@
                     }
                 ],
                 url: {
-                    list: "/${module}/${list_component.classname}/list",
-                    delete: "/${module}/${list_component.classname}/deleteMain",
-                    deleteBatch: "/${module}/${list_component.classname}/deleteBatchMain",
+                    list: "/${table.modulePath}/${table.classname}/list",
+                    delete: "/${table.modulePath}/${table.classname}/deleteMain",
+                    deleteBatch: "/${table.modulePath}/${table.classname}/deleteBatchMain",
                 },
             }
         },

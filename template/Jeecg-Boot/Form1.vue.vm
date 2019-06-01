@@ -162,10 +162,10 @@
                 validatorRules:{
                 },
                 url: {
-                    add: "/${module}/${table.classname}/add",
-                    edit: "/${module}/${table.classname}/edit",
-                    delete: "/${module}/${table.classname}/deleteMain",
-                    deleteBatch: "/${module}/${table.classname}/deleteBatchMain",
+                    add: "/${module}/${master_component.table.classname}/add",
+                    edit: "/${module}/${master_component.table.classname}/edit",
+                    delete: "/${module}/${master_component.table.classname}/deleteMain",
+                    deleteBatch: "/${module}/${master_component.table.classname}/deleteBatchMain",
                 },
             }
         },

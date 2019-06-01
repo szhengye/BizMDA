@@ -109,7 +109,7 @@
 
                 ],
                 url: {
-                    list: "/${list_component.table.modulePath}/${list_component.table.classname}/list",
+                    list: "/${table.modulePath}/${table.classname}/list",
                 },
             }
         },
@@ -125,7 +125,7 @@
                 this.form = form;
                 this.fieldName = fieldName;
                 var that = this;
-                getAction("/${list_component.table.modulePath}/${list_component.table.classname}/queryById", {
+                getAction("/${table.modulePath}/${table.classname}/queryById", {
                     id: id
                 }).then((res) => {
                     if (res.success) {
