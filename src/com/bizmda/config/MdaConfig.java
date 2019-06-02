@@ -24,6 +24,7 @@ public class MdaConfig {
 	private Map<String, TableEntity> tableMap;
 	private Map<String, DictionaryEntity> dictionaryMap;
 	private Map<String, ViewEntity> viewMap;
+	private Map<String,MenuEntity> menuMap;
 	
     private static MdaConfig instance = new MdaConfig(); 
     private MdaConfig(){} 
@@ -44,7 +45,7 @@ public class MdaConfig {
 		}
 
 		this.dictionaryMap = new HashMap<String, DictionaryEntity>();
-		List<File> dictFileList = GenUtils.getFileList(configPath+"/dictionary");
+		List<File> dictFileList = GenUtils.getFileList(configPath+"/"+this.mdaEntity.getTemplate()+"/dictionary");
 		for(File dictFile:dictFileList) {
 			if (!dictFile.getName().toLowerCase().endsWith(".yml"))
 				continue;
@@ -59,7 +60,7 @@ public class MdaConfig {
 			map.put("name",name);
 //            log.info("dict:"+map.toString());
             DictionaryEntity dictionaryEntity = new DictionaryEntity(map);
-			String modulePath = getModulePath(dictFile,configPath+"/dictionary");
+			String modulePath = getModulePath(dictFile,configPath+"/"+this.mdaEntity.getTemplate()+"/dictionary");
 			String module = modulePath.replace("/",".");
             dictionaryEntity.setModule(module);
             dictionaryEntity.setModulePath(modulePath);
@@ -68,7 +69,7 @@ public class MdaConfig {
 		}
 
 		this.tableMap = new HashMap<String, TableEntity>();
-		List<File> dataFileList = GenUtils.getFileList(configPath+"/data");
+		List<File> dataFileList = GenUtils.getFileList(configPath+"/"+this.mdaEntity.getTemplate()+"/data");
 		for(File dataFile:dataFileList) {
 			if (!dataFile.getName().endsWith(".yml"))
 				continue;
@@ -83,7 +84,7 @@ public class MdaConfig {
 			map.put("name",name);
 //            log.info(map.toString());
             TableEntity tableEntity = new TableEntity(map);
-			String modulePath = getModulePath(dataFile,configPath+"/data");
+			String modulePath = getModulePath(dataFile,configPath+"/"+this.mdaEntity.getTemplate()+"/data");
 			String module = modulePath.replace("/",".");
 			tableEntity.setModule(module);
 			tableEntity.setModulePath(modulePath);
@@ -96,8 +97,9 @@ public class MdaConfig {
 			TableEntity tableEntity = this.tableMap.get(tableName);
 			for(FieldEntity fieldEntity:tableEntity.getFields()) {
 				String primaryKeyTableName = fieldEntity.getPrimaryKeyTableName();
-				if (primaryKeyTableName == null)
+				if (primaryKeyTableName == null) {
 					continue;
+				}
 				TableEntity primaryKeyTableEntity = this.tableMap.get(primaryKeyTableName);
 				if (primaryKeyTableEntity == null) {
 					throw new MdaException("错误：域["+primaryKeyTableName+"."
@@ -113,7 +115,7 @@ public class MdaConfig {
 		}
 
 		this.viewMap = new HashMap<String, ViewEntity>();
-		List<File> viewFileList = GenUtils.getFileList(configPath+"/view");
+		List<File> viewFileList = GenUtils.getFileList(configPath+"/"+this.mdaEntity.getTemplate()+"/view");
 		for(File viewFile:viewFileList) {
 			if (!viewFile.getName().endsWith(".yml"))
 				continue;
@@ -128,7 +130,7 @@ public class MdaConfig {
 //			log.info(map.toString());
 			ViewEntity viewEntity = new ViewEntity(map);
 			viewEntity.setView((Map)map.get("view"));
-			String modulePath = getModulePath(viewFile,configPath+"/view");
+			String modulePath = getModulePath(viewFile,configPath+"/"+this.mdaEntity.getTemplate()+"/view");
 			String module = modulePath.replace("/",".");
 			viewEntity.setModule(module);
 			viewEntity.setModulePath(modulePath);
@@ -137,6 +139,29 @@ public class MdaConfig {
 			this.viewMap.put(viewEntity.getName(), viewEntity);
 		}
 
+		this.menuMap = new HashMap<String, MenuEntity>();
+		List<File> menuFileList = GenUtils.getFileList(configPath+"/"+this.mdaEntity.getTemplate()+"/menu");
+		for(File menuFile:menuFileList) {
+			if (!menuFile.getName().endsWith(".yml")) {
+				continue;
+			}
+			String name = menuFile.getName().substring(0,menuFile.getName().length()-4);
+			try {
+				map = (Map)yaml.load(new FileInputStream(menuFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			MenuEntity menuEntity = new MenuEntity(map);
+			menuEntity.setName(name);
+			String modulePath = getModulePath(menuFile,configPath+"/"+this.mdaEntity.getTemplate()+"/menu");
+			String module = modulePath.replace("/",".");
+			menuEntity.setModule(module);
+			menuEntity.setModulePath(modulePath);
+
+			log.info("menu:"+menuEntity.toString());
+			this.menuMap.put(menuEntity.getName(), menuEntity);
+		}
 	}
 
 	private String getModulePath(File file,String prePath) {
