@@ -1,0 +1,14 @@
+#代码作者名
+author: Steven
+#代码作者邮箱
+email: steven@bizmda.com
+#版本号
+version: V1.0
+#生成代码所属java包名
+packageName: com.bizmda
+#生成代码文件所在目录
+sourcePath: tmp/src
+#生成资源文件所在目录
+resourcePath: tmp/resource
+#生成代码所用的模板名
+template: Jeecg-Boot
