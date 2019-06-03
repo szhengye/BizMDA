@@ -7,8 +7,8 @@ version: V1.0
 #生成代码所属java包名
 packageName: com.bizmda
 #生成代码文件所在目录
-sourcePath: tmp/src
+sourcePath: Jeecg-Boot/src
 #生成资源文件所在目录
-resourcePath: tmp/resource
+resourcePath: Jeecg-Boot/resource
 #生成代码所用的模板名
 template: Jeecg-Boot

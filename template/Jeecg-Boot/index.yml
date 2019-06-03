@@ -30,7 +30,7 @@ templates:
    target: ${mda.resourcePath}/db/${modulePath}/${name}.sql
    #字典文件加载JS文件
  - file: dictionary.js.vm
-   model: dicts
+   model: all
    target: ${mda.resourcePath}/src/config/MdaDictionary.js
    #数据列表VUE页面文件（带查询条件和分页，包括数据增、删、改，多条删除，以及EXCEL文件导入、导出）
  - file: List1.vue.vm

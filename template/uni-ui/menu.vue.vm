@@ -1,0 +1,93 @@
+<template>
+    <view class="page">
+        <view class="example">
+            <view class="example-title">${title}</view>
+            <uni-grid :options="menuData" @click="onClick" />
+        </view>
+    </view>
+</template>
+
+<script>
+    import uniGrid from '@/components/uni-grid/uni-grid.vue'
+
+    export default {
+        components: {
+            uniGrid
+        },
+        data() {
+            return {
+                swiperGridHeight: '0px',
+                swiperGridWidth: '100%',
+                menuData: [
+#foreach($item in $items)
+                    {
+                        image: '${item.icon}',
+                        text: '${item.label}'
+                    },
+
+#end
+                ],
+            }
+        },
+        methods: {
+            onClick(e) {
+                switch(e.index) {
+#set($_index = 0)
+#foreach($item in $items)
+                    case $_index:
+#if(${item.action} == "OPEN-MENU")
+                        uni.navigateTo({
+                            url: '/pages/menu/${item.params.name}/${item.params.name}'
+                        });
+#elseif((${item.action} == "OPEN-VIEW"))
+#end
+#set($_index = $_index + 1)
+#end
+                        break;
+                    default:
+                }
+                console.log('点击grid:' + JSON.stringify(e))
+            }
+        }
+    }
+</script>
+<style>
+    page {
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        background-color: #fff
+    }
+
+    view {
+        font-size: 28upx;
+        line-height: inherit
+    }
+
+    .example {
+        padding: 0 30upx 30upx
+    }
+
+    .example-title {
+        font-size: 32upx;
+        line-height: 32upx;
+        color: #777;
+        margin: 40upx 25upx;
+        position: relative
+    }
+
+    .example .example-title {
+        margin: 40upx 0
+    }
+
+    .example-body {
+        padding: 0 40upx
+    }
+
+    .grid-view {
+        /* #ifdef H5 */
+        padding: 0 0.5px;
+        /* #endif */
+        box-sizing: border-box;
+    }
+</style>

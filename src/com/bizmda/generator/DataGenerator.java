@@ -113,17 +113,56 @@ public class DataGenerator {
 			}
 		}
 
-		//封装模板数据
+		for(String key:mdaConfig.getMenuMap().keySet()) {
+			MenuEntity menuEntity = mdaConfig.getMenuMap().get(key);
+			log.info("menu before:"+menuEntity);
+			//封装模板数据
+			Map map = menuEntity.toMap();
+			map.put("mda", mdaEntityMap);
+			map.put("usd","$");
+			log.info("menuMap before:"+map);
+			VelocityContext context = new VelocityContext(map);            //渲染模板
+
+			for(TemplateItemEntity templateItemEntity:templateEntity.getTemplates()) {
+				String model = templateItemEntity.getModel();
+				if (!model.equalsIgnoreCase("menu"))
+					continue;
+				//设置输出
+				log.info("before:"+templateItemEntity.getTarget());
+				StringWriter stringWriter = new StringWriter();
+				ve.evaluate(context, stringWriter, "", templateItemEntity.getTarget());
+				String targetFile = stringWriter.toString();
+				log.info("after:"+targetFile);
+
+				GenUtils.mkdir(property+"/"+targetFile);
+
+				PrintWriter writer;
+				try {
+					writer = new PrintWriter(property+"/"+targetFile);
+				} catch (FileNotFoundException e) {
+					throw new MdaException("文件不存在!",e);
+				}
+				String template = templateItemEntity.getFile();
+				Template tpl = Velocity.getTemplate(template, "UTF-8" );
+				tpl.merge(context, writer);
+				writer.close();
+			}
+		}
+
+		//根据dict建模生成字典总体文件
 		Map map = new HashMap();
 
 		map.put("dicts", mdaConfig.getDictionaryMap());
+		map.put("tables",mdaConfig.getTableMap());
+		map.put("menus",mdaConfig.getMenuMap());
+		map.put("views",mdaConfig.getViewMap());
 		map.put("mda", mdaEntityMap);
 		map.put("usd","$");
-		log.info("dictsMap:"+map);
+		log.info("allMap:"+map);
 		VelocityContext context = new VelocityContext(map);
 		for(TemplateItemEntity templateItemEntity:templateEntity.getTemplates()) {
 			String model = templateItemEntity.getModel();
-			if (!model.equalsIgnoreCase("dicts"))
+			if (!model.equalsIgnoreCase("all"))
 				continue;
 			//设置输出
 			log.info("before:"+templateItemEntity.getTarget());

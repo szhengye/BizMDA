@@ -1,0 +1,33 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+#foreach($menu in $menus.entrySet())
+  #if(${menu.key} == 'menu')
+
+    {
+      "path": "pages/menu/menu/menu",
+      "style": {
+        "navigationBarTitleText": "${menu.value.title}"
+      }
+    },
+  #end
+#end
+#foreach($menu in $menus.entrySet())
+  #if(${menu.key} != 'menu')
+
+    {
+      "path": "pages/menu/${menu.value.name}/${menu.value.name}",
+      "style": {
+        "navigationBarTitleText": "${menu.value.title}"
+      }
+    },
+  #end
+#end
+
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}

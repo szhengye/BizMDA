@@ -3,12 +3,12 @@ title: BizMDA菜单
 model: UNI-GRID
 items:
   - label: 子菜单
-    icon:
+    icon: /static/c1.png
     action: OPEN-MENU
     params:
-      name: child1
+      name: menu1/menu1
   - label: 打开视图
-    icon:
+    icon: /static/c2.png
     action: OPEN-VIEW
     params:
       name:

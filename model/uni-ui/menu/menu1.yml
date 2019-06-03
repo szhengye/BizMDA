@@ -1,0 +1,14 @@
+#菜单页面标题
+title: BizMDA子菜单
+model: UNI-GRID
+items:
+  - label: 子菜单2
+    icon: /static/c1.png
+    action: OPEN-MENU
+    params:
+      name: menu11/menu11
+  - label: 打开视图2
+    icon: /static/c2.png
+    action: OPEN-VIEW
+    params:
+      name:
