@@ -1,26 +1,28 @@
 {
-  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-#foreach($menu in $menus.entrySet())
-  #if(${menu.key} == 'menu')
+  "pages": [
+#foreach($view in $views.entrySet())
+  #set($fullName = ${view.value.module}+'/'+${view.value.className})
+  #if(${fullName} == ${mda.startView})
 
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
     {
-      "path": "pages/menu/menu/menu",
+      "path": "pages/${fullName}",
       "style": {
-        "navigationBarTitleText": "${menu.value.title}"
+        "navigationBarTitleText": "${view.value.label}"
       }
-    },
-  #end
+    }#end
 #end
-#foreach($menu in $menus.entrySet())
-  #if(${menu.key} != 'menu')
+#foreach($view in $views.entrySet())
+#set($fullName = ${view.value.module}+'/'+${view.value.className})
+#if(${fullName} != ${mda.startView}),
 
     {
-      "path": "pages/menu/${menu.value.name}/${menu.value.name}",
+      "path": "pages/${fullName}",
       "style": {
-        "navigationBarTitleText": "${menu.value.title}"
+        "navigationBarTitleText": "${view.value.label}"
       }
-    },
-  #end
+    }
+#end
 #end
 
   ],

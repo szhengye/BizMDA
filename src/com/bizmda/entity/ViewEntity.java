@@ -73,10 +73,17 @@ public class ViewEntity {
             componentEntity.setType(type);
             List<FieldEntity> fieldEntityList = new ArrayList<FieldEntity>();
             List<Map> fieldList = (List<Map>)component.get("fields");
+            if (fieldList == null) {
+                fieldList = new ArrayList<Map>();
+            }
             for(Map field:fieldList) {
                 String fieldName = (String)field.get("name");
-                FieldEntity fieldEntity = tableEntity.getFieldByName(fieldName);
-                FieldEntity fieldEntity1 = new FieldEntity();
+                FieldEntity fieldEntity1;
+                if (tableEntity == null)
+                    fieldEntity1 = new FieldEntity();
+                else
+                    fieldEntity1 = tableEntity.getFieldByName(fieldName);
+                FieldEntity fieldEntity = new FieldEntity(field);
                 try {
                     BeanUtils.copyProperties(fieldEntity1,fieldEntity);
                 } catch (IllegalAccessException e) {

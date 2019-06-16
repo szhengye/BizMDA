@@ -47,8 +47,10 @@ public class ComponentEntity {
 
 	public ComponentEntity(TableEntity table,Map viewMap) throws MdaException {
 		try {
-			log.info("table:"+table);
-			BeanUtils.copyProperties(this,table);
+			if (table != null) {
+                log.info("table:" + table);
+                BeanUtils.copyProperties(this, table);
+            }
 		} catch (IllegalAccessException e) {
 			throw new MdaException("视图属性拷贝出错!",e);
 		} catch (InvocationTargetException e) {

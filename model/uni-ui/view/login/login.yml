@@ -1,0 +1,36 @@
+#标签
+label: 登录
+#视图展现模块
+model: FORM-1
+#查询条件域列表
+components:
+    #视图类型：FORM表单组件
+  - type: MASTER
+    #相关数据表
+#    tableName: customer
+    #视图扩展属性
+    view:
+    fields:
+      #域名
+      - name: user_name
+        label: 用户
+        #数据类型：int,float,decimal(19,2)-money,date,datetime,tinyint-boolean,varchar(100),char(10),blob
+        type: varchar(20)
+        view:
+          placeholder: 输入用户名
+          icon: person
+      - name: password
+        label: 密码
+        type: varchar(20)
+        view:
+          placeholder: 输入密码
+          icon: locked
+    actions:
+      - type: DO-SERVICE-AND-OPEN-VIEW
+        label: 登录
+        params:
+          view: /pages/menu/Menu
+          method: POST
+          url: /sys/login
+          data: "{username: this.record.userName, password: this.record.password, captcha: 'abmr'}"
+#          confirm: true

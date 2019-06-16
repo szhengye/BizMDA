@@ -20,6 +20,7 @@ public class MdaEntity {
 	private String sourcePath;
 	private String resourcePath;
 	private String template;
+	private String startView;
 
 	public MdaEntity(Map map) {
 		this.author = (String)map.get("author");
@@ -30,6 +31,7 @@ public class MdaEntity {
 		this.sourcePath = (String)map.get("sourcePath");
 		this.resourcePath = (String)map.get("resourcePath");
 		this.template = (String)map.get("template");
+		this.startView = (String)map.get("startView");
 	}
 	
 	public Map toMap() {
@@ -43,6 +45,7 @@ public class MdaEntity {
 		map.put("resourcePath", this.resourcePath);
 		map.put("template", this.template);
 		map.put("datetime",DateUtils.format(new Date(), DateUtils.DATE_TIME_PATTERN));
+		map.put("startView",this.startView);
 		return map;
 	}
 	

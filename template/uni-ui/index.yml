@@ -1,13 +1,19 @@
 name: Jeecg-Boot快速开发框架
 templates:
 #菜单单页VUE页面
-  - file: menu.vue.vm
-    model: menu
-    target: ${mda.resourcePath}/pages/menu/${modulePath}/${name}/${name}.vue
+#  - file: menu.vue.vm
+#    model: menu
+#    target: ${mda.resourcePath}/pages/menu/${modulePath}/${name}/${name}.vue
   - file: pages.json.vm
     model: all
     target: ${mda.resourcePath}/pages.json
-#   #数据Entity实体类
+  - file: Menu1.vue.vm
+    model: MENU-1
+    target: ${mda.resourcePath}/pages/${modulePath}/${className}.vue
+  - file: Form1.vue.vm
+    model: FORM-1
+    target: ${mda.resourcePath}/pages/${modulePath}/${className}.vue
+  #   #数据Entity实体类
 # - file: Entity.java.vm
 #   model: data
 #   target: ${mda.sourcePath}/${mda.packagePath}/${modulePath}/entity/${className}.java
@@ -43,10 +49,7 @@ templates:
 # - file: List1.vue.vm
 #   model: LIST-1
 #   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
-#   #数据表单，支持明细子表
-# - file: Form1.vue.vm
-#   model: FORM-1
-#   target: ${mda.resourcePath}/src/views/${modulePath}/${className}.vue
+   #九宫格菜单
 #   #弹出数据表单新增/编辑的modal页面
 # - file: FormModal1.vue.vm
 #   model: FORM-MODAL-1

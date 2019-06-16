@@ -12,3 +12,4 @@ sourcePath: uni-ui/src
 resourcePath: uni-ui/resource
 #生成代码所用的模板名
 template: uni-ui
+startView: login/Login

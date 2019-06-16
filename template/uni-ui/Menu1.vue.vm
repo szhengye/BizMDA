@@ -1,7 +1,14 @@
+#foreach ($component in $components)
+  #if(${component.type} == "MENU")
+    #set($menu_component = $component)
+    #break
+  #end
+#end
+
 <template>
     <view class="page">
         <view class="example">
-            <view class="example-title">${title}</view>
+            <view class="example-title">${label}</view>
             <uni-grid :options="menuData" @click="onClick" />
         </view>
     </view>
@@ -19,12 +26,11 @@
                 swiperGridHeight: '0px',
                 swiperGridWidth: '100%',
                 menuData: [
-#foreach($item in $items)
+#foreach($action in $menu_component.actions)
                     {
-                        image: '${item.icon}',
-                        text: '${item.label}'
+                        image: '${action.params.image}',
+                        text: '${action.label}'
                     },
-
 #end
                 ],
             }
@@ -33,13 +39,12 @@
             onClick(e) {
                 switch(e.index) {
 #set($_index = 0)
-#foreach($item in $items)
+#foreach($action in $menu_component.actions)
                     case $_index:
-#if(${item.action} == "OPEN-MENU")
+#if(${action.type} == "OPEN-VIEW")
                         uni.navigateTo({
-                            url: '/pages/menu/${item.params.name}/${item.params.name}'
+                            url: '/pages/${action.params.view}'
                         });
-#elseif((${item.action} == "OPEN-VIEW"))
 #end
 #set($_index = $_index + 1)
 #end
