@@ -1,0 +1,24 @@
+#标签
+label: 子菜单
+#视图展现模块
+model: MENU-1
+#相关数据表
+#tableName: customer
+#查询条件域列表
+components:
+    #视图类型：数据列表组件
+  - type: MENU
+    #按钮动作
+    actions:
+      #动作类型
+      - type: OPEN-VIEW
+        label: 第一个
+        params:
+          icon: "picfill"
+          view: menu/Menu
+#          query: "{mda_id: record.custNo}"
+      - type: OPEN-VIEW
+        label: 第二个
+        params:
+          icon: "noticefill"
+          view: menu/Menu

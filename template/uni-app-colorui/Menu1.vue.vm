@@ -1,0 +1,71 @@
+#foreach ($component in $components)
+  #if(${component.type} == "MENU")
+    #set($menu_component = $component)
+    #break
+  #end
+#end
+<template>
+    <view>
+        <view class="cu-list grid col-3">
+            <view class="cu-item" v-for="(item,index) in cuIconList" :key="index" @click="onClick">
+                <view @click="onClick(index)">
+                  <view :class="['cuIcon-' + item.cuIcon,'text-' + item.color]">
+                      <view class="cu-tag badge" v-if="item.badge!=0">
+                          <block v-if="item.badge!=1">{{item.badge>99?'99+':item.badge}}</block>
+                      </view>
+                  </view>
+                  <text>{{item.name}}</text>
+              </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                cuIconList: [
+#foreach($action in $menu_component.actions)
+                    {
+                        cuIcon: '${action.params.icon}',
+                        color: 'red',
+                        badge: 0,
+                        name: '${action.label}'
+                    },
+#end
+                ],
+            }
+        },
+        methods: {
+            onClick(index) {
+                switch(index) {
+#set($_index = 0)
+#foreach($action in $menu_component.actions)
+                    case $_index:
+#if(${action.type} == "OPEN-VIEW")
+                        uni.navigateTo({
+                            url: '/pages/${action.params.view}'
+                        });
+#end
+#set($_index = $_index + 1)
+#end
+                        break;
+                    default:
+                }
+                console.log('点击grid:' + index)
+            }
+        }
+    }
+</script>
+
+<style>
+    .page {
+        height: 100Vh;
+        width: 100vw;
+    }
+
+    .page.show {
+        overflow: hidden;
+    }
+</style>

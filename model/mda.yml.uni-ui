@@ -7,8 +7,9 @@ version: V1.0
 #生成代码所属java包名
 packageName: com.bizmda
 #生成代码文件所在目录
-sourcePath: uni-ui/src
+sourcePath: uni-app-colorui/src
 #生成资源文件所在目录
-resourcePath: uni-ui/resource
+resourcePath: uni-app-colorui/resource
 #生成代码所用的模板名
-template: uni-ui
+template: uni-app-colorui
+startView: login/Login

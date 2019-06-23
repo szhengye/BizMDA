@@ -1,0 +1,35 @@
+{
+  "pages": [
+#foreach($view in $views.entrySet())
+  #set($fullName = ${view.value.module}+'/'+${view.value.className})
+  #if(${fullName} == ${mda.startView})
+
+    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/${fullName}",
+      "style": {
+        "navigationBarTitleText": "${view.value.label}"
+      }
+    }#end
+#end
+#foreach($view in $views.entrySet())
+#set($fullName = ${view.value.module}+'/'+${view.value.className})
+#if(${fullName} != ${mda.startView}),
+
+    {
+      "path": "pages/${fullName}",
+      "style": {
+        "navigationBarTitleText": "${view.value.label}"
+      }
+    }
+#end
+#end
+
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  }
+}

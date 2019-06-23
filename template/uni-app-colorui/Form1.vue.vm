@@ -1,0 +1,81 @@
+#foreach ($component in $components)
+  #if(${component.type} == "MASTER")
+    #set($master_component = $component)
+    #break
+  #end
+#end
+
+<template>
+    <view>
+        <view class="cu-card case">
+            <view class="cu-item shadow">
+                <form>
+#foreach($field in $master_component.fields)
+                    <view class="cu-form-group #if($velocityCount == 1)margin-top#end">
+                        <view class="title">${field.label}</view>
+                        <input v-model="record.${field.classname}" placeholder="${field.view.placeholder}" name="input"></input>
+#if(${field.view.icon})
+                        <text class='cuIcon-${field.view.icon} text-black'></text>
+#end
+                    </view>
+#end
+		            </form>
+            </view>
+        </view>
+
+        <view class="box">
+            <view class="cu-bar btn-group">
+#foreach($action in $master_component.actions)
+
+                <button class="cu-btn bg-blue shadow-blur lg" @click="doAction$velocityCount()">${action.label}</button>
+#end
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+    export default {
+        onLoad(){
+            // tha = this;
+        },
+        data() {
+            return {
+                record : {}
+            };
+        },
+        methods: {
+#set($action_id = 0)
+#foreach($action in $master_component.actions)
+#set($action_id = $action_id + 1)
+    #if(${action.type} == 'DO-SERVICE-AND-OPEN-VIEW')
+
+            doAction${action_id}() {
+                this.${usd}http.request({
+                    url: "${action.params.url}",
+                    method: "${action.params.method}",
+                    data: ${action.params.data} ,
+                    success: (e) => {
+                        console.log(66, e)
+                        let token = e.data.result.token;
+                        console.log("token:" + token);
+                        if (token) {
+                            this.${usd}http.saveToken(token);
+                        }
+                        uni.navigateTo({
+                            url: '${action.params.view}'
+                        });
+                    }
+                })
+            }
+    #end
+#end
+        }
+    }
+</script>
+
+<style>
+    .cu-form-group .title {
+        min-width: calc(4em + 15px);
+    }
+</style>
